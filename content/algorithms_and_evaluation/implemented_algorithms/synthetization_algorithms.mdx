@@ -1,0 +1,20 @@
+# Synthetic Data Generation Algorithms
+
+## CTGAN
+
+CTGAN (Conditional Tabular GAN) is a GAN-based method specifically designed for generating synthetic tabular data. It addresses the challenges of modeling tabular data with mixed categorical and continuous columns and imbalanced categorical columns.
+
+**Key features:**
+- Uses mode-specific normalization for continuous columns
+- Employs conditional generation to handle imbalanced categorical data
+- Applies training-by-sampling to manage multi-dimensional categorical columns
+
+## TVAE
+
+TVAE (Tabular Variational Autoencoder) is a deep learning method that uses variational autoencoders adapted for tabular data generation. It learns the underlying data distribution and generates synthetic samples that preserve statistical properties of the original data.
+
+**Key features:**
+- Employs a variational autoencoder architecture tailored for tabular data
+- Handles mixed data types (numerical and categorical)
+- Typically provides good performance on datasets with complex correlations
+- Often faster to train than GAN-based approaches
