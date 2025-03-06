@@ -35,10 +35,10 @@ This will generate static files in the out directory, which can be served by any
 ## Content Structure
 The Nextra documentation follows a content-based structure. Here's how it's organized:
 
-    - Content Directory: All your documentation files are stored in the content directory.
-    - Index File: content/index.mdx acts as the homepage for your site.
-    - Subdirectories: Organize your content using subdirectories within the content folder to define hierarchical routes. For example, content/docs/guide.mdx will be available at /docs/guide.
-    - `_meta.js` files can be used to define the order of documents in a directory
+- Content Directory: All your documentation files are stored in the content directory.
+- Index File: content/index.mdx acts as the homepage for your site.
+- Subdirectories: Organize your content using subdirectories within the content folder to define hierarchical routes. For example, content/docs/guide.mdx will be available at /docs/guide.
+- `_meta.js` files can be used to define the order of documents in a directory
 
 Use Markdown link syntax `[text](link)` to create links between your content files.
 
