@@ -11,10 +11,11 @@ export const metadata = {
 const navbar = (
   <Navbar
     logo={<b>Cinnamon</b>}
+    projectLink='https://github.com/KI-AIM/KI-AIM-Platform'
     // ... Your additional navbar options
   />
 )
-const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>
+const footer = <Footer>MIT {new Date().getFullYear()} © Cinnamon.</Footer>
  
 export default async function RootLayout({ children }) {
   return (
@@ -34,10 +35,10 @@ export default async function RootLayout({ children }) {
       <body>
         <Layout
           navbar={navbar}
+          sidebar={{autoCollapse:true, defaultMenuCollapseLevel: 1}}
           pageMap={await getPageMap()}
           docsRepositoryBase="https://github.com/KI-AIM/cinnamon-docs"
-          footer={footer}
-          // ... Your additional layout options
+          footer={footer}          // ... Your additional layout options
         >
           {children}
         </Layout>
