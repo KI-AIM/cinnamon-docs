@@ -1,9 +1,5 @@
 export default {
-    index: 'Welcome',
-    introduction: {
-        title: 'Introduction',
-        type: 'doc'
-    },
+    index: 'Overview',
     getting_started: {
         title: 'Getting Started',
         type: 'doc'
