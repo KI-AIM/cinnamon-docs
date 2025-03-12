@@ -1,6 +1,7 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
+import Image from 'next/image'
 import 'nextra-theme-docs/style.css'
  
 export const metadata = {
@@ -10,7 +11,7 @@ export const metadata = {
  
 const navbar = (
   <Navbar
-    logo={<b>Cinnamon</b>}
+    logo={<div><Image src="/img/logo.png" alt="start" width={50} height={50} style={{ display: 'inline', marginRight: '5px' }}/><b>Cinnamon</b></div>}
     projectLink='https://github.com/KI-AIM/KI-AIM-Platform'
     // ... Your additional navbar options
   />
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }) {
       // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
       suppressHydrationWarning
     >
+      <link rel="icon" href="/img/favicon/favicon.ico" sizes="any" />
       <Head
       // ... Your additional head options
       >
