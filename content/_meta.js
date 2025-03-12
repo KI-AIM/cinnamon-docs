@@ -16,10 +16,6 @@ export default {
         title: 'Algorithms and Evaluation',
         type: 'doc'
     },
-    user_interface: {
-        title: 'User Interface and Navigation',
-        type: 'doc'
-    },
     configuration_customization: {
         title: 'Configuration and Customization',
         type: 'doc'
