@@ -1,25 +1,322 @@
-# Quick Start Tutorial 
+import Image from 'next/image'
 
+{/*❶ ❷ ❸ ❹ ❺ ❻ ❼ ❽ ❾ ❿
+⓫ ⓬ ⓭ ⓮ ⓯ ⓰ ⓱ ⓲ ⓳ ⓴*/}
+
+# Quick Start Tutorial 
+This chapter provides an overview of the various pages and functions of Cinnamon. It serves as a quick start guide, offering a brief introduction to the essential steps needed to protect your data.
+
+**IMPORTANT**: This guide primarily focuses on how to interact with the application. It does not delve deeply into the impact of different steps and configurations on the outcomes. For detailed information on these aspects, please refer to the dedicated guide. 
 ## Opening Cinnamon 
+Once you have installed Cinnamon, either locally or on a web server, you can access the application via its URL (for a local installation, use localhost:8080). Opening this URL will take you to the application's login page. 
+![Login Page](/img/pages/login.png)
+
+## UI and Navigation
+The UI of cinnamon is split into three pieces: 
+![UI](/img/pages/ui.png)
+<ul style={{paddingLeft: '20px'}}>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}><span style={{fontSize: '24pt', color:'#C8CFA0',}}>&#9632;</span>&nbsp;<span style={{alignSelf: 'center'}}><b>Navigation:</b> The navigation of the app, indicating which steps have been completed and what the current step is. Clicking on it allows to change the current page.</span></div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}><span style={{fontSize: '24pt', color:'#EF9C66',}}>&#9632;</span>&nbsp;<span style={{alignSelf: 'center'}}><b>Page Title:</b> The title of the page, indicating the current content viewed.</span></div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}><span style={{fontSize: '24pt', color:'#78ABA8',}}>&#9632;</span>&nbsp;<span style={{alignSelf: 'center'}}><b>Content:</b> The actual content of the application. All interactions take place here. </span></div>
+    </li>
+</ul>
+
+The navigation panel remains visible throughout your use of the app, providing a clear overview of all steps involved in the process. It shows your current progress, highlights which steps are completed, and allows you to easily navigate back to previous steps to make any necessary adjustments. This feature ensures you can manage and refine your configuration efficiently as you work through the process.
+<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+    <Image src="/img/pages/nav_initial.png" alt="start" width={150} height={150}/>
+    <Image src="/img/pages/nav_progress.png" alt="start" width={150} height={150}/>
+</div>
 
 ## Account / Project Management 
+In Cinnamon, projects are linked directly to individual accounts, and currently, there is no option for collaborative work. To create new projects, you must set up a new account. This system ensures that only authorized users can access uploaded data and download both anonymized data and configurations. However, you can delete uploaded data without deleting your account, allowing you to start afresh if needed.
+
+To create an account, click the register button on the login page. You can register with just a username and password. There are plans to add email support, LDAP sync, and other security options in the future. Once your account is created, you can log in immediately.
+![Login Page](/img/pages/register.png)
+
+## Start
+After login you will see the start page of application, indicating that everything worked correctly. 
+![Login Page](/img/pages/start.png)
+
+Later in development you will be able to choose different modes here. For now, only the standard mode is implemented. Read the information on this page carefully and continue with the <Image src="/img/pages/buttons/start_button.png" alt="start" width={50} height={50} style={{ display: 'inline' }}/> button
 
 ## Uploading Data
+![Upload Page](/img/pages/upload.png)
+To upload your data, start by clicking the first <Image src="/img/pages/buttons/browse_button.png" alt="'Browse...'" width={50} height={50} style={{ display: 'inline' }}/> button, which will open a dialog for you to select the file you wish to upload. Supported file types include .csv and .xlsx, ensuring compatibility with common data formats. Once you’ve selected your file, you can click on the <Image src="/img/pages/buttons/gear.png" alt="gear" width={30} height={30} style={{ display: 'inline' }}/> icon to access additional file information and configure specific settings, such as CSV or XLSX options, to tailor the import process to your needs. Furthermore, if you have previously defined configurations, you can effortlessly apply them to your new upload using the second <Image src="/img/pages/buttons/browse_button.png" alt="'Browse...'" width={50} height={50} style={{ display: 'inline' }}/> button, making the process quick and efficient.
+
+Confirm your upload by clicking the <Image src="/img/pages/buttons/confirm_data.png" alt="'Confirm data configuration'" width={175} height={175} style={{ display: 'inline' }}/> button.
 
 ## Configuring Data
+![Data Config Page](/img/pages/data-config.png)
 
-## Validating Data 
+Upon entering the Data Configuration section, you'll see two main areas: Attribute Configuration and Dataset Configuration. These sections can be expanded by clicking on them to reveal more details.
 
-## Optional: Additional Data / Risk Assessment
+![Data Config Page](/img/pages/attribute-config.png)
+The Attribute Configuration allows you to adjust settings for each attribute in your dataset, including configuring the column name, type, and scale. A <Image src="/img/pages/buttons/gear.png" alt="gear" width={30} height={30} style={{ display: 'inline' }}/> icon is available for accessing more advanced configurations. While the platform provides initial estimates for these settings, it's important for users to review and verify them for accuracy. If you have received an existing configuration for your dataset, you can upload it with the <Image src="/img/pages/buttons/upload.png" alt="'Upload'" width={50} height={50} style={{ display: 'inline' }}/> button.
+
+![Data Config Page](/img/pages/data-set-config.png)
+The Dataset Configuration section includes an option to perform an additional analysis, which can be toggled with a checkbox. Keep in mind that opting for this analysis limits the volume of data available for use in models later on.
+
+When your configuration is complete, confirm by clicking the <Image src="/img/pages/buttons/confirm_data_config.png" alt="'Confirm data configuration'" width={200} height={200} style={{ display: 'inline' }}/> button.
+
+## Validating Data
+![Data Validation Page](/img/pages/validation.png)
+The Data Validation feature provides a comprehensive view of your dataset's integrity, starting with a summary section that offers an overview of the validation process. It clearly details the total number of rows, alongside how many rows have been validated as correct and how many are set to be adjusted. Beneath this summary, you’ll find two additional sections — A Dataset Overview and a statistical attribute inspection — which are initially collapsed for a cleaner interface.
+
+<b>Dataset Overview</b><br/>
+Within the Dataset Overview, your data is presented in a tabular format, utilizing pagination to manage larger datasets by displaying only parts at a time. This table highlights any rows where errors occurred during validation, with specific cells marked to guide your attention. Additionally, you can filter the displayed rows to see only valid or invalid entries, which aids in efficiently tracking and resolving errors.
+![Data Validation Page](/img/pages/validation_table.png)
+
+<ul style={{paddingLeft: '20px'}}>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❶</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Pagination - Navigate through the dataset and adjust the number of rows displayed.
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❷</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Header Column with the name of the attributes.
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❸</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                An invalid row - The row is highlighted in a slight red tint. The invalid cell is highlighted in a more deep red tone. 
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❹</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                A valid row - It is not highlighted at all. 
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❺</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                A dropdown to filter the shown values - You can filter for invalid, valid or both.
+            </span>
+        </div>
+    </li>
+</ul>
+
+
+<b>Statistical Attribute Inspection</b><br/>
+The Attribute Inspection section offers an in-depth analysis of each attribute, presenting a variety of statistical parameters to help you understand the characteristics of your data. It includes visual graphs to illustrate attribute distributions, which you can customize to display either histograms or density plots.
+![Data Validation Page](/img/pages/validation_graphs.png)
+
+<ul style={{paddingLeft: '20px'}}>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❶</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Filter the displayed attribute summary by typing the name of the attribute. 
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❷</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Summary of the most important information for the attribute. The statistical parameters shown depend on the configured attribute type.
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❸</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Graph for the attribute. The type of graph can be changed with the dropdown. For some attribute types, the graph can not be changed. 
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❹</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Details button opens a pop-up with more information for the attribute. 
+            </span>
+        </div>
+    </li>
+</ul>
+
+For an even deeper dive, the Details menu provides access to further statistical parameters and more detailed graphs, allowing users to thoroughly investigate and validate their dataset's attributes.
+![Data Validation Page](/img/pages/validation_detail.png)
+<ul style={{paddingLeft: '20px'}}>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❶</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Indicator for the attribute for which details are shown.
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❷</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Overview of the settings for the attribute
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❸</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Overview for important metrics (These are also shown in the general overview).
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❹</span>&nbsp;
+                A more detailed view of the graphs in the overview.
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❺</span>&nbsp;
+                Additional metrics, that can give more information for an attribute. 
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❻</span>&nbsp;
+                A table for values of the attribute. Can be used to investigate outliers, for example.
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+</ul>
+
+## General Algorithm Configuration Information
+In our system, algorithms are designed to register themselves through an API, with their specifications defining the necessary configuration fields. This dynamic registration process enables the configuration pages to be constructed dynamically, tailored to the specific requirements of each algorithm with a range of input elements.
+
+The configuration pages utilize three primary input types: input fields, checkboxes, and list attributes. These elements ensure flexibility and precision in setting up configurations. 
+
+<b>Inputs</b>
+![Data Validation Page](/img/pages/general_input.png)
+<b>Checkboxes</b>
+![Data Validation Page](/img/pages/general_checkbox.png)
+<b>List Inputs</b>
+![Data Validation Page](/img/pages/general_list.png)
+For list attributes, an additional menu can be accessed via the <Image src="/img/pages/buttons/gear.png" alt="gear" width={30} height={30} style={{ display: 'inline' }}/> icon, allowing for detailed customization within the list.
+<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+    <Image src="/img/pages/general_list_config.png" alt="start" width={250} height={250}/>
+</div>
+
+
+To aid users, each input is accompanied by an <Image src="/img/pages/buttons/info.png" alt="info" width={30} height={30} style={{ display: 'inline' }}/> icon. Clicking this icon provides additional context and details about the field, ensuring users have all the necessary information to make informed configuration decisions. 
+![Data Validation Page](/img/pages/general_info.png)
+
+<ul style={{paddingLeft: '20px'}}>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❶</span>&nbsp;
+                The name of the configuration field.
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❷</span>&nbsp;
+                Range values for the input configuration. Shows a minimum, maximum and default value for every configuration 
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❸</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                A detailed description for every configuration field. This includes the impact of changing the configuration as well as information how to find a good value for your data.
+            </span>
+        </div>
+    </li>
+</ul>
+
+
 
 ## Anonymization Configuration
+![Data Validation Page](/img/pages/anonymization.png)
+The Anonymization Configuration page is your control center for selecting and setting up the methods used to protect your data. To start, you must first select an anonymization method, as initially, no configurations are preset. Once a method is chosen, the necessary configuration options will appear on the page, enabling a tailored setup according to your requirements.
+![Data Validation Page](/img/pages/anonymization_selected.png)
+
+
+The page is divided into two main sections: Privacy Model Configuration and Attribute Configuration, both initially collapsed for a streamlined view. By clicking on these sections, you can expand them to access detailed configuration options. The Privacy Model Configuration section contains key parameters that directly impact the anonymization results, requiring careful adjustment to ensure effective data protection.
+![Data Validation Page](/img/pages/anonymization_config.png)
+
+
+Meanwhile, the Attribute Configuration section allows you to set specific protection rules for each attribute individually. To add attributes to the configuration, they can be selected individually from the drop-down menu or all added at once.
+![Data Validation Page](/img/pages/anonymization_add_attr.png)
+
+It's crucial to configure protection settings for every attribute you wish to anonymize. If you do not define specific rules, the system defaults to a standard configuration of deletion. This structured approach grants you precise control over how each piece of your data is managed within the anonymization process.
+![Data Validation Page](/img/pages/anonymization_attr_config.png)
+
+
+If you do not want to perform any anonymization protection, you can skip this step with the <Image src="/img/pages/buttons/skip.png" alt="'Skip'" width={50} height={50} style={{ display: 'inline' }}/> button.
 
 ## Synthetization Configuration
+![Data Validation Page](/img/pages/synthetization.png)
+The Synthetization Configuration page is designed to let you select and fine-tune the synthetization methods that best suit your data needs. Initially, the page presents no preset configurations; you must first choose a synthetization method. Once a method is selected, relevant configuration options will be displayed, allowing you to customize your settings.
 
-## Processing
+![Data Validation Page](/img/pages/synthetization_config.png)
+The configuration inputs can vary depending on the chosen method, providing a tailored setup process. These inputs may be organized into sub-configurations, each grouping related settings to simplify the configuration process and ensure clarity. This structured approach enables you to manage the synthetization settings effectively, facilitating a smooth and personalized experience tailored to your specific data synthesis requirements.
 
-## Evaluation Configuration
+## Execution
+The Execution Page is your command center for managing and monitoring the status of your current pipeline. Here, the steps you configured previously are initiated, with processes executed in sequence—starting with anonymization, followed by synthetization.
+![Data Validation Page](/img/pages/processing.png)
+
+Throughout the processing pipeline, you can view the status of each step as it changes from not started (<Image src="/img/pages/buttons/not_started.png" alt="'Not Started'" width={60} height={60} style={{ display: 'inline' }}/>) to running (<Image src="/img/pages/buttons/running.png" alt="'Running'" width={60} height={60} style={{ display: 'inline' }}/>), and finally to finished (<Image src="/img/pages/buttons/finished.png" alt="'Finished'" width={60} height={60} style={{ display: 'inline' }}/>). Skipped steps will be shown as well (<Image src="/img/pages/buttons/skipped.png" alt="'Skipped'" width={60} height={60} style={{ display: 'inline' }}/>). 
+
+While a step is running, the status tab provides real-time updates and estimates on remaining processing time, keeping you informed of progress.
+
+Once a step is completed, you can inspect the processed data by accessing the table view and attribute statistics, much like in the [Validation](/getting_started/quick_start_tutorial#validating-data) view. This feature allows you to review the outcomes of each processing step thoroughly, ensuring the results meet your expectations before moving forward.
+
+## Technical Evaluation
+![Data Validation Page](/img/pages/technical_eval.png)
+The Technical Evaluation module operates similarly to the anonymization and synthetization configurations by registering configuration options tailored to specific evaluation needs. However, it differs from algorithmic configurations mainly in its focus on enabling or disabling specific metric calculations, allowing you to customize which aspects of evaluation are prioritized.
+![Data Validation Page](/img/pages/technical_eval_resemblance.png)
+
+Within this module, you can configure both resemblance metrics and utility metrics. Resemblance metrics assess how closely the processed data mirrors the original dataset, while utility metrics focus on evaluating the potential performance of AI models trained on the data for a specified target variable. This setup provides a comprehensive evaluation framework to ensure that data maintains its integrity and usefulness post-processing.
+![Data Validation Page](/img/pages/technical_eval_utility.png)
+
+## Risk Evaluation
+The Risk Evaluation module is designed to assess the vulnerability of your data by simulating various attack scenarios. It systematically performs attempts at information inference, record linkage, and the singling out of individual records to identify potential privacy risks.
+![Data Validation Page](/img/pages/risk_eval.png)
+
+Information inference tests whether sensitive information can be indirectly discovered from the data. Record linkage evaluates the possibility of matching anonymized records with external datasets to identify individuals. Singling out assesses the risk that individual records can be uniquely identified within the dataset.
+
+This comprehensive risk assessment ensures that your data maintains a high standard of privacy and security, helping identify and mitigate potential threats before they become issues.
 
 ## Analyzing Results 
 
 ## Exporting Results
+The Export Section is your go-to area for exporting your project's data and configurations, with export buttons conveniently located in the sidebar for easy access.
+<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+    <Image src="/img/pages/download_location.png" alt="start" width={250} height={250}/>
+</div>
+
+The primary export option is the Project Download, which generates a comprehensive export package encompassing all aspects of your project. This includes the original data, synthetic and anonymized data sets, train and test data used during evaluation, all configuration settings, and the results from the evaluation process. It serves as the main export function, intended for use after completing your data protection workflow, ensuring you have a complete record of your project.
+
+In addition to this, there's a Configuration Export option, allowing you to export specific configurations for later use. Users can select which configurations to export from a list of previously configured steps, providing flexibility and convenience in managing and reusing your setup across future projects.
+![Data Validation Page](/img/pages/download_selection.png)
