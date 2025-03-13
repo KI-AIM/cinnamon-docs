@@ -309,6 +309,24 @@ Information inference tests whether sensitive information can be indirectly disc
 This comprehensive risk assessment ensures that your data maintains a high standard of privacy and security, helping identify and mitigate potential threats before they become issues.
 
 ## Analyzing Results 
+The Evaluation Results page provides results for the evaluation process for the protected data. The page is structured similarly to the functionality of the [execution](/getting_started/quick_start_tutorial#execution) page. This page is divided into two main sections: one for the Technical Evaluation and another for the Risk Evaluation, each offering distinct insights into different aspects of your data's protection level.
+![Data Validation Page](/img/pages/evaluation.png)
+
+
+<b>Technical Evaluation</b><br/>
+![Data Validation Page](/img/pages/technical_eval_results.png)
+
+<b>Risk Evaluation</b><br/>
+![Data Validation Page](/img/pages/risk_eval_results.png)
+
+The Risk Evaluation section presents a set of specific metrics for each attribute, helping to gauge the integrity and security of your data. The metrics include:
+
+Overall Risk: A risk score that indicates higher risks with increasing scores, providing a clear signal of potential vulnerabilities.
+Risk Confidence Interval: The confidence interval associated with the overall risk score, offering a statistical range for understanding the precision of the risk estimate.
+Successful Attack: This metric represents the ratio of attacks that were successful. Higher rates may point to systematic disparities between the protected data and the original dataset.
+Error Rate: Placeholder for the Error Rate.
+Inference Rate: This measures how many attribute values can be successfully inferred from other attributes, helping identify potential privacy leaks from inferable information.
+These evaluations collectively offer a comprehensive overview of the strengths and weaknesses in your data protection strategy, guiding future improvements.
 
 ## Exporting Results
 The Export Section is your go-to area for exporting your project's data and configurations, with export buttons conveniently located in the sidebar for easy access.
