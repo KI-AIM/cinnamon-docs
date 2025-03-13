@@ -1,0 +1,17 @@
+# Cinnamon Anonymization
+
+The Cinnamon-Anonymization module is responsible for anonymizing datasets.
+
+## Tasks
+
+Cinnamon Anonymization is responsible for the following tasks:
+
+### Anonymization
+The anonymization modules provides an interface for anonymizing a dataset.
+Internally [ARX](https://arx.deidentifier.org/) is used for the anonymization.
+Configurations are simplified for increased usability and will be automatically converted to ARX configurations.
+
+## Architecture
+
+The anonymization module is based on Java 17 and Spring Boot 3.
+Processes are stored in memory only so no database is used.
