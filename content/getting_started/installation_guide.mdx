@@ -13,24 +13,16 @@ The simplest way to install Cinnamon is by running the provided Docker Compose f
 
 ### Installation
 
-Download the [docker-compose.yml](https://github.com/KI-AIM/KI-AIM-Platform/blob/main/docker-compose.yml) from Cinnamon's repository.
-Set the password of the database user in the downloaded file.
-This has to be done for the cinnamon-db and cinnamon-platform services.
+Download the [docker-compose.yml](https://github.com/KI-AIM/Cinnamon/blob/main/docker-compose.yml) and [.env](https://github.com/KI-AIM/Cinnamon/blob/main/.env) from Cinnamon's repository.
+Set the password of the database user in the downloaded .env file.
 
-```yaml
-services:
-  cinnamon-db:
-    environment:
-      # Has to match the datasource settings of the cinnamon-platform container
-      - POSTGRES_PASSWORD=changeme
-    cinnamon-platform:
-      environment:
-        # Datasource has to match with the configuration of the cinnamon-db container
-        SPRING_DATASOURCE_PASSWORD: changeme
+```sh
+# .env
+PG_PASSWORD="changeme"
 ```
 
 For a local installation for development or testing purposes, no further configuration is required.
-Running the following command in the directory of the `docker-compose.yml` starts all modules:
+Place both files into the desired directory and run the following command in the same directory to start all modules:
 
 ```bash
 docker-compose up -d
@@ -44,6 +36,7 @@ If you want to install Cinnamon for productive usage, further configuration may 
 1. Mount the database
 
 ```yaml
+# docker-compose.yml
 services:
     cinnamon-db:
         volumes:
@@ -68,7 +61,7 @@ The following software is required for a manual installation:
 Cinnamon has been tested to work with the specified version, but other versions may work as well.
 
 ### Build
-First, clone the [Cinnamon repository](https://github.com/KI-AIM/KI-AIM-Platform/tree/main) from GitHub.
+First, clone the [Cinnamon repository](https://github.com/KI-AIM/Cinnamon/tree/main) from GitHub.
 
 1. Build the Cinnamon Platform and Cinnamon Anonymization modules
 
