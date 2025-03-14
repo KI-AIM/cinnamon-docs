@@ -3,7 +3,7 @@ name: Build and Deploy Nextra Site
 on:
   push:
     branches:
-      - deploy
+      - main
 
 jobs:
   build:
