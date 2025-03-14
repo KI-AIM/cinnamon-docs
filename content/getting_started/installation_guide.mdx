@@ -43,6 +43,17 @@ services:
             - ./volumes/cinnamon-db/data:/var/lib/postgresql/data
 ```
 
+2. (Optional) Configure demo server
+
+Cinnamon has build in support for running the platform as a demonstration instance.
+This enables a daily database reset and displays a disclaimer at the top of each page.
+To enable the demonstration mode, set the `IS_DEMO_INSTANCE` variable in the `.env` file to `true`.
+
+```sh
+# .env
+IS_DEMO_INSTANCE=true
+```
+
 ## Manual Installation
 
 A manual installation of all the modules is possible but not recommended.
