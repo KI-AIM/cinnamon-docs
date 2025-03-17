@@ -308,25 +308,125 @@ Information inference tests whether sensitive information can be indirectly disc
 
 This comprehensive risk assessment ensures that your data maintains a high standard of privacy and security, helping identify and mitigate potential threats before they become issues.
 
-## Analyzing Results 
+## Analyzing Results
 The Evaluation Results page provides results for the evaluation process for the protected data. The page is structured similarly to the functionality of the [execution](/getting_started/quick_start_tutorial#execution) page. This page is divided into two main sections: one for the Technical Evaluation and another for the Risk Evaluation, each offering distinct insights into different aspects of your data's protection level.
 ![Data Validation Page](/img/pages/evaluation.png)
+The following sections give a deeper explanation about the Technical and Risk Evaluation.
 
+### Technical Evaluation
 
-<b>Technical Evaluation</b><br/>
+<b>Resemblance Metrics:</b><br/>
+Similar to the statistical attribute inspection, the resemblance is presented in two different views.
+A simple overview giving statistical information about the protected data and a detailed overview for a deeper analysis of the resemblance.
+The simplified overview is the same as in the statistical attribute inspection except that the graph now shows the distribution of the protected data and the original data.
+![Resemblance Overview](/img/pages/resemblance.png)
+
+The detailed view is divided into multiple sections.
+![Resemblance Details](/img/pages/resemblance_details.png)
+<ul style={{paddingLeft: '20px'}}>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❶</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Indicator for the attribute for which details are shown.
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❷</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Overview of the settings for the attribute
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❸</span>&nbsp;
+            <span style={{alignSelf: 'center'}}>
+                Comparison for important metrics.
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❹</span>&nbsp;
+               Comparison for distributions
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❺</span>&nbsp;
+                Tables comparing the values of the attribute.
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+    <li>
+        <div style={{display: 'flex', alignContent: 'center'}}>
+            <span style={{fontSize: '18pt', color:'red',}}>❻</span>&nbsp;
+                Comparison of additional metrics.
+            <span style={{alignSelf: 'center'}}>
+            </span>
+        </div>
+    </li>
+</ul>
+
+<b>Utility Metrics:</b><br/>
+<b>Discriminator-based Evaluation:</b>
+The Discriminator-based Evaluation trains a machine learning classifier to distinguish between the original and protected data.
+A poor classification performance indicates that the protected data closely resemblance the original data.
+The values range form 0 to 1, where 0.5 is the ideal result.
+
+<b>Machine Learning Utility:</b>
+Results of the Machine Learning Utility are shown in three tables.
+The frist two tables display the scores for the original and protected data.
+Scores range from 0 to 1, where 1 indicates a good machine learning utility.
+The third table compares the machine learning utility of both datasets.
+A score of 0 means the machine learning utility performs identical.
+
+For each classifier, the following metrics are calculated:
+
+<b>Accuracy:</b> Percentage of correctly classified samples
+
+<b>Balanced Accuracy:</b> Mean of sensitivity (percentage of correctly identified positives) and specificity (percentage of correctly classified negatives)
+
+<b>F1 Score:</b> Different way to measure the accuracy taking into account the sensitivity (percentage of correctly identified positives) and precision (ratio of correctly identified positives and positive classified samples)
+
+<b>ROC AUC:</b> Receiver Operator Characteristic Area Under the Curve measures the balance between true positives and false-positive across all classes
+
 ![Data Validation Page](/img/pages/technical_eval_results.png)
 
-<b>Risk Evaluation</b><br/>
-![Data Validation Page](/img/pages/risk_eval_results.png)
+### Risk Evaluation
 
 The Risk Evaluation section presents a set of specific metrics for each attribute, helping to gauge the integrity and security of your data. The metrics include:
 
-Overall Risk: A risk score that indicates higher risks with increasing scores, providing a clear signal of potential vulnerabilities.
-Risk Confidence Interval: The confidence interval associated with the overall risk score, offering a statistical range for understanding the precision of the risk estimate.
-Successful Attack: This metric represents the ratio of attacks that were successful. Higher rates may point to systematic disparities between the protected data and the original dataset.
-Error Rate: Placeholder for the Error Rate.
-Inference Rate: This measures how many attribute values can be successfully inferred from other attributes, helping identify potential privacy leaks from inferable information.
+<b>Overall Risk:</b>
+A risk score that indicates higher risks with increasing scores, providing a clear signal of potential vulnerabilities.
+
+<b>Risk Confidence:</b>
+The confidence interval associated with the overall risk score, offering a statistical range for understanding the precision of the risk estimate.
+
+<b>Successful Attack:</b>
+This metric represents the ratio of attacks that were successful. Higher rates may point to systematic disparities between the protected data and the original dataset.
+
+<b>Error Rate:</b>
+Placeholder for the Error Rate.
+
+<b>Inference Rate:</b>This measures how many attribute values can be successfully inferred from other attributes, helping identify potential privacy leaks from inferable information.
+
 These evaluations collectively offer a comprehensive overview of the strengths and weaknesses in your data protection strategy, guiding future improvements.
+![Data Validation Page](/img/pages/risk_eval_results.png)
+
+### Color Scale
+To give an impression about the evaluation, all statistical values are encoded with a color scale.
+By default, blue represents the value of the original dataset, and a diverging color scale from green to red gives a rough assessment of the statistical value.
+This color scale can be changed by clicking on the "Metrics" button on the left navigation bar.
+A color legend of the current color scale can bee opened by clicking on the <Image src="/img/pages/buttons/color_legend.png" alt="'Legend'" width={50} height={50} style={{ display: 'inline' }}/> button above graphs and and tables.
+
+![Color Legend](/img/pages/color_legend.png)
 
 ## Exporting Results
 The Export Section is your go-to area for exporting your project's data and configurations, with export buttons conveniently located in the sidebar for easy access.
