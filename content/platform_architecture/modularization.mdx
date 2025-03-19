@@ -1,0 +1,15 @@
+# Modular Design
+
+Cinnamon's functionalities are divided into distinct modules:
+- [Cinnamon Platform](/platform_architecture/modules/platform)
+- [Cinnamon Anonymization](/platform_architecture/modules/anonymization)
+- [Cinnamon Synthetization](/platform_architecture/modules/synthetization)
+- [Cinnamon Evaluation](/platform_architecture/modules/evaluation)
+- [Cinnamon Risk-Assessment](/platform_architecture/modules/risk_assessment)
+
+Cinnamon Platform acts as the center of the platform and is responsible for integrating all the other modules into Cinnamon.
+The platform manages the data flow and controls processes running on other modules.
+Communication is only done between platform and other modules, allowing each module to function independently.
+This modular design ensures that modules can be swapped with custom implementations, as long as the required API endpoints are implemented.
+
+![alt](/architecture.png)
