@@ -1,0 +1,53 @@
+# Cinnamon Platform
+
+Cinnamon Platform is the main application of Cinnamon.
+It is responsible for managing projects, data, processes and the communication with other modules.
+The frontend is also included in Cinnamon Platform.
+
+## Tasks
+
+Cinnamon Platform is responsible for the following tasks:
+
+### Provision of General Information
+
+Cinnamon's workflow is dynamic because of the modularity and configurability.
+On the application level, processes can be added to the workflow and the order of processes can be changed.
+This requires the frontend to display the information dynamically.
+Cinnamon-Platform provides general information about workflows.
+
+### Data Management
+Cinnamon is working with different types of data.
+First, data sets and the corresponding metadata of the original data but also from results are stored in the platform.
+Cinnamon Platform provides functionalities for importing data from different sources into the platform and also for retrieving the data again.
+During the import, datasets are validated if they comply with the provided metadata.
+Potential error in the data are stored separately and can be retrieved together with the data.
+
+Processes of external modules require configurations.
+These are also managed by the platform and stored as generic strings, so modules can define the structure independently of the Cinnamon Platform.
+
+Results of processes can contain resources besides data sets, for example statistics or information about errors.
+These resources are stored as generic strings similar to the configurations.
+
+### Process Management
+
+The entire workflow is based on processes that are executed by the various modules.
+Cinnamon Platform keeps track of these processes and provides utility for managing them, like starting, stopping and monitoring.
+A simple scheduling mechanism with a configurable maximum number of parallel processes per module can limit the required CPU resources.
+Results are sent to the platform via a callback mechanism.
+
+### User/Project Management
+
+All information like datasets, processes and results are contained within projects.
+It tracks the state of each project and validates if actions are allowed.
+The platform also handles authentication and authorization for users.
+
+### Serving the frontend
+
+The Cinnamon Platform module includes the frontend, which acts as the user interface for all aforementioned tasks.
+It fetches information on how to display configurations directly from the modules and information about processes from the platform.
+
+## Architecture
+
+Cinnamon Platform is based on Java 17 and uses Spring Boot 3.
+It uses an underlying PostgreSQL database to store data.
+The frontend is written with Angular 15.

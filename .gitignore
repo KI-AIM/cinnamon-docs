@@ -137,3 +137,6 @@ dist
 
 # search index
 _pagefind/
+
+# JetBrains IDE
+.idea

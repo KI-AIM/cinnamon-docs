@@ -1,7 +1,143 @@
 # Installation Guide
 
-## Prerequisites 
-- Docker
-- Docker Compose 
+The platform with all it's modules can be easily installed on a server or on the local machine using Docker Compose.
+Additionally all modules can be installed manually but this is still work-in-progress and not recommended.
 
-## Step by Step Guide
+## Installation with Docker Compose
+
+The simplest way to install Cinnamon is by running the provided Docker Compose file.
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Installation
+
+Download the [docker-compose.yml](https://github.com/KI-AIM/Cinnamon/blob/main/docker-compose.yml) and [.env](https://github.com/KI-AIM/Cinnamon/blob/main/.env) from Cinnamon's repository.
+Set the password of the database user in the downloaded .env file.
+
+```sh
+# .env
+PG_PASSWORD="changeme"
+```
+
+For a local installation for development or testing purposes, no further configuration is required.
+Place both files into the desired directory and run the following command in the same directory to start all modules:
+
+```bash
+docker-compose up -d
+```
+
+The website can be accessed by opening the address http://localhost:8080 in the browser.
+
+### Configuration
+If you want to install Cinnamon for productive usage, further configuration may be required.
+
+1. Set the URLs for the client
+
+The client needs to be able to reach all modules.
+The Cinnamon Platform must run at the root of the server, otherwise the website will not be able to fetch the required resources.
+To configure the URLs of other modules, use the `CINNAMON.EXTERNAL-SERVER.<X>.URL-CLIENT` variable.
+
+```yaml
+# docker-compose.yml
+services:
+    cinnamon-platform:
+        environment:
+            CINNAMON.EXTERNAL-SERVER.0.URL-CLIENT: # URL to Cinnamon Anonymization
+            CINNAMON.EXTERNAL-SERVER.1.URL-CLIENT: # URL to Cinnamon Synthetization
+            CINNAMON.EXTERNAL-SERVER.2.URL-CLIENT: # URL to Cinnamon Evaluation
+            CINNAMON.EXTERNAL-SERVER.3.URL-CLIENT: # URL to Cinnamon Risk-Assessment
+```
+
+2. Mount the database
+
+In order to persist the database, mount the data directory from PostgreSQL to your machine:
+
+```yaml
+# docker-compose.yml
+services:
+    cinnamon-db:
+        volumes:
+            - </path/on/machine>:/var/lib/postgresql/data
+```
+
+3. (Optional) Configure demo server
+
+Cinnamon has build in support for running the platform as a demonstration instance.
+This enables a daily database reset and displays a disclaimer at the top of each page.
+To enable the demonstration mode, set the `IS_DEMO_INSTANCE` variable in the `.env` file to `true`.
+
+```sh
+# .env
+IS_DEMO_INSTANCE=true
+```
+
+## Manual Installation
+
+A manual installation of all the modules is possible but not recommended.
+This guide is still work-in-progress and will be improved in the future.
+
+Currently prebuild packages for a standalone installation are not available and have to be build manually.
+Configuration of the platform is only possible by modifying the `application.properties` before building.
+This will be improved later by adding an external configuration file.
+
+### Prerequisites
+The following software is required for a manual installation:
+- Python 3.10
+- Tomcat 10
+- PostgreSQL 16.2
+
+Cinnamon has been tested to work with the specified version, but other versions may work as well.
+
+### Build
+First, clone the [Cinnamon repository](https://github.com/KI-AIM/Cinnamon/tree/main) from GitHub.
+
+1. Build the Cinnamon Platform and Cinnamon Anonymization modules
+
+If you want to change the configuration of the platform you have to do so before building.
+You can change the `application.properties` inside `cinnamon-platform/src/main/resources`.
+For example, in order to set the password of the database, change the value of `spring.datasource.password`.
+
+Both modules use maven as their build system.
+
+Compiling the anonymization requires to install arx first.
+```bash
+mvn install:install-file -Dfile=ki-aim-anon/src/main/resources/lib/libarx-3.9.1.jar -DgroupId=org.deidentifier -DartifactId=arx -Dversion=3.9.1 -Dpackaging=jar
+```
+
+Then both modules can be build with the following command, which creates two `.war` files for the anonymization and platform modules.
+
+```bash
+mvn clean install
+```
+
+### Installation
+1. Set up the database
+
+Cinnamon Platform requires a database user and a database in PostgreSQL.
+The following snippet can be used as an example.
+
+```sql
+CREATE ROLE cinnamon_user WITH PASSWORD 'changeme' LOGIN;
+CREATE DATABASE cinnamon_db OWNER cinnamon_user;
+```
+
+The database schema will be created automatically when the application starts.
+
+2. Start the platform and the anonymization modules
+
+Move the `.war` files into the desired directories inside the `webapps` folder.
+Please read the [official Tomcat 10 documentation](https://tomcat.apache.org/tomcat-10.0-doc/deployer-howto.html) for further information.
+
+4. Start the synthetization module
+
+Instructions will be added in the future.
+
+5. Start the evaluation module
+
+Instructions will be added in the future.
+
+6. Start the risk assessment module
+
+Instructions will be added in the future.
