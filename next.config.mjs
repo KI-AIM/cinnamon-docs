@@ -13,5 +13,5 @@ export default withNextra({
   // ... Other Next.js config options
   output: 'export',
   images: { unoptimized: true },
-  basePath: '/cinnamon-docs'
+  basePath: ''
 })
