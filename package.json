@@ -13,7 +13,8 @@
         "start": "next start",
         "dev": "next --turbopack",
         "deploy": "gh-pages -d out -t",
-        "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
+        "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
+        "postexport": "touch out/.nojekyll"
     },
     "devDependencies": {
         "@types/node": "22.13.9",
