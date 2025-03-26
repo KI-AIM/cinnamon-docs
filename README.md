@@ -18,7 +18,7 @@ npm install
 
 To start a local development server and preview your documentation, run:
 ```bash
-npm run dev
+npm run dev 
 ```
 		
 This command will start the server at http://localhost:3000 by default. Any changes you make to the files in the content directory will automatically reload the site.
