@@ -14,5 +14,5 @@ export default withNextra({
   output: 'export',
   images: { unoptimized: true },
   basePath: '/cinnamon-docs',
-  assetPrefix: '/cinnamon-docs',
+  assetPrefix: '/cinnamon-docs', //<Image> tags need to manually apply this property
 })

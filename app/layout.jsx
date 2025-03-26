@@ -3,7 +3,6 @@ import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import Image from 'next/image'
 import 'nextra-theme-docs/style.css'
- 
 export const metadata = {
   // Define your metadata here
   // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
@@ -11,8 +10,8 @@ export const metadata = {
  
 const navbar = (
   <Navbar
-    logo={<div><Image src="/img/logo.png" alt="start" width={50} height={50} style={{ display: 'inline', marginRight: '5px' }}/><b>Cinnamon</b></div>}
-    projectLink='https://github.com/KI-AIM/KI-AIM-Platform'
+    logo={<div><Image src="/cinnamon-docs/img/logo.png" alt="start" width={50} height={50} style={{ display: 'inline', marginRight: '5px' }}/><b>Cinnamon</b></div>}
+    projectLink='https://github.com/KI-AIM/Cinnamon'
     // ... Your additional navbar options
   />
 )
@@ -39,7 +38,7 @@ export default async function RootLayout({ children }) {
           navbar={navbar}
           sidebar={{autoCollapse:true, defaultMenuCollapseLevel: 1}}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/KI-AIM/cinnamon-docs"
+          docsRepositoryBase="https://github.com/KI-AIM/cinnamon-docs/tree/main"
           footer={footer}          // ... Your additional layout options
         >
           {children}
