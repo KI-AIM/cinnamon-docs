@@ -1,0 +1,103 @@
+# API Requirements for Modules
+
+- Applications functionaing as external server need to fullfill some API requirements
+- Communicaton via REST
+- API endpoints can be configured see [Configuration](/configuration_customization/configuration_properties)
+
+## API Endpoints
+
+### Available Algorithms
+
+**Description:** Provides a list of algorithms available in the module.
+
+**HTTP Method:** GET<br/>
+
+**Response Type:** YAML<br/>
+
+**Response Content:**<br/>
+
+Must return an array of available algorithms.
+An algorithm has the following attributes:
+
+| Parameter | Type | Description |
+| - | - | - |
+| Description | string | Description of the algorithm shown in the algorithm selection. |
+| display_name | string | Name displayed in the UI. |
+| name | string | Internal identifier. |
+| type | string | Type of data the algorithm supports. Currently not used as the platform only supports cross sectional data.  |
+| URL | string | Path after the server URL for fetching the configuration definition of the algorithm. |
+| version | string | Version of the algorithm. |
+
+**Example:**
+
+```yaml
+algorithms:
+- description: CTGAN is a GAN-based model that can generate synthetic tabular data.
+  display_name: Conditional Tabular GAN
+  name: ctgan
+  type: cross-sectional
+  URL: /synthetic_tabular_data_generator/synthesizer_config/ctgan.yaml
+  version: `0.1`
+```
+
+### Configuration Definition
+
+**Description:** Provides the configuration definition required by a specific algorithm.
+
+**HTTP Method:** GET<br/>
+
+**Response Type:** YAML<br/>
+
+**Response Content:**<br/>
+
+The definition is hierarchical structure of groups.
+Groups are dispplayed in the UI as collapsables
+
+Root has same as algorithm above and is also functioning as the root level group.
+
+Group has the following parameter:
+
+#### Configuration Group
+| Parameter | Type | Description |
+| - | - | - |
+| display_name | string | Display name of the group. |
+| description | string | Description of the group. |
+| parameters | [`Input Definition[]`](#input-definition) | Configuration parameter in this group. |
+| configurations | Record of [ConfigurationGroup](#configuration-group) | Nested configuration groups. |
+| options | Record of [ConfigurationGroup](#configuration-group) | Nested configuration groups that can be toggled. |
+
+#### Input Definition
+| Parameter | Type | Description |
+| - | - | - |
+| name | `string` | Name for identifying the parameter in the configuration. |
+| type | [Input Type](#input-types) | Type of the parameter and the input. |
+| label | `string` | Label displayed in the UI. |
+| description | `string` | Description displayed in the UI. |
+| default_value | Depending on the type: `string` or `number` or `number[]` | The default value for the input. |
+| invert | `string` or `null` | If `type` is `attribute_list` and the value is not `null`, a list of unchecked attributes named as the value of this parameter will be added to the configuration.  |
+| min_value | `number` | Minimum value if `type` is `float` or `integer`. |
+| max_value | `number` | Maximum value if `type` is `float` or `integer`. |
+| values | `string[]` or `null` | If `type` is `float` or `string`, turns the input into a select input. |
+| switch | | |
+
+
+#### Input types
+| Name | Description | Input element |
+| - | - | - |
+| attribute | Selection of one attribute inside the dataset. | One select input. |
+| attribute_list | Selection of multiple attributes inside the dataset. | One checkbox per attribute |
+| boolean | True of false. | One checkbox. |
+| float | Numeric number. | One numerical input. |
+| integer | Natural number. | One numerical input. |
+| list | List of number with dynamic size. | Multiple numerical inputs. |
+| string | Freetext or selection | One text input. |
+
+### Start Process
+
+### Status process Status
+
+HTTP Method: GET
+
+### Cancel Process
+
+## Sending Results
