@@ -2,49 +2,55 @@
 
 This sections contains concepts for developing the Angular frontend.
 
-## Development environment
+## Setting up the development environment
 
 ### Cinnamon Platform
 1. Install Java 17
-2. Install the latest PostreSQL. If this fails, tested versions are: 16.1
+2. Install the latest PostgreSQL. Tested versions are: 16
 3. Download Tomcat 10
     1. Download Tomcat 10 Core from here: https://tomcat.apache.org/download-10
     2. Unzip the file and move the folder to your preferred destination
 4. Checkout Cinnamon
 5. Set up the database. Execute the script `cinnamon-platform/src/main/resources/db/db_create.sql` as user postgres
 6. Add run configuration to your IDE
-   1. IntelliJ
-      1. Create a new configuration for a local Tomcat server
+   - IntelliJ
+      1. Create a new configuration for a `Local` `Tomcat Server`
       2. Select the previous installed Tomcat 10 server as the `Application server`.
          You might have to add the server by clicking the `Configure...` button.
          `Tomcat Home` and `Tomcat base directory` should point to the extracted directory.
       3. (Optional) Add `-Dspring.profiles.active=dev` to your `VM options`.
-         This enables the development profile and allows to run other modules with Docker (for example with the provided docker-componse.yml).
+         This enables the development profile and allows to run other modules with Docker (for example with the provided docker-compose.yml).
       4. Select your `JRE`
       5. Under the `Deployment` Tab add the artifact `cinnamon-platform:.war exploded`.
          The `Application context` must be the root, otherwise Angular will not be able to communicate with the backend.
-   2. IntelliJ Community
+   - IntelliJ Community
       1. Install the plugin `Smart Tomcat`
       2. Select the previous installed Tomcat 10 server as the `Tomcat server`.
          You might have to add the server by clicking the `Configure...` button.
       3. (Optional) Add `-Dspring.profiles.active=dev` to your `VM options`.
-         This enables the development profile and allows to run other modules with Docker (for example with the provided docker-componse.yml).
-8. (Optional) Install Docker for the other modules
+         This enables the development profile and allows to run other modules with Docker (for example with the provided docker-compose.yml).
+7. (Optional) Install Docker for running other modules
 
 ### Cinnamon Frontend
-1. Install Node (Supporte versions can be found here: https://angular.dev/reference/versions)
+1. Install Node (Supported versions can be found here: https://angular.dev/reference/versions)
 2. Checkout Cinnamon
-3. Navigate to the directory `cinnamon-platform/cinnamon-frontend` and run `npm install`
+3. Install dependencies. Navigate to the directory `cinnamon-platform/cinnamon-frontend` and run `npm install`
 4. Add run configuration to your IDE
-    1. IntelliJ
-      1. Create a new configuration for a Shell Script
+    - IntelliJ
+      1. Create a new `npm` configuration
+      2. Select the `package.json` at `<project path>\cinnamon-platform\cinnamon-frontend\package.json`
+      3. Set `Command` to `run`
+      4. Set `Scripts` to `ng`
+      5. Set `Arguments` to `serve`
+      6. (Optional) Create a `JavaScript Debug` configuration and set URL to `http://localhost:4200`
+    - IntelliJ Community
+      1. Create a new `Shell Script` configuration
       2. Select `Script text`
-      3. `Script text` `ng serve`
+      3. Set `Script text` to `ng serve`
       4. Set the working directory to `<project path>/cinnamon-platform/cinnamon-frontend`
       5. Check `Execute in the terminal`
-      6. (Optional) Set up
 
-## Project directories
+## Project Structure
 
 The application's code is located in the `src/app/` directory. The entry point of the application is `index.html`, which currently only adds the root component `<app-root>` under `src/app/app.component.*`. The root module `app.module.ts` adds all the necessary modules and defines global providers.
 
@@ -60,12 +66,12 @@ The `assets` directory contains all static resources for a webpage. PathLocation
 
 The `styling` directory contains global stylesheets.
 
-## Environments
+## Usage of Environments
 
 This projects uses environments located in `src/environments` for setting up the development environment.
 The `dev` environment is automatically loaded when running the frontend locally with `ng serve`.
 This will replace the regular `environments.ts` with the `environment-dev.ts` during the build.
-Currently, only the backend URL is set to `http://localhost:8080`.
+Currently, only the backend URL is set.
 
 This file can be imported like any other typescript file in other components.
 For example in a service class the import statement would look like this:
@@ -74,7 +80,7 @@ For example in a service class the import statement would look like this:
 import { environments } from "../../../environments/environment";
 ```
 
-## Main App Layout
+## Application Layout
 
 The layout of the application is built in the root module `app.component.html`.
 The navigation is located on the left and handles different page configurations through an object (`steps.ts`).
@@ -86,6 +92,7 @@ The central view is changed by the router component depending on the URL. The ro
 The AuthGuard ensures that only authenticated users can access these pages and redirects to the login page if the user is not logged in.
 
 ```ts
+// app-routing.module.ts
 const routes: Routes = [
     {path: '', redirectTo: 'login', pathMatch: 'full'},
     {path: 'login' , component: LoginComponent},
@@ -107,7 +114,7 @@ The `StateManagementService` manages as the name suggests the state of the curre
 By injecting the service into the constructor in `app.component.ts` the `StateManagementService` gets initialized when reloading the page and fetches the state of the project from the backend.
 This can also be done manually by calling the provided methods, for example after the user logged in.
 
-## How to handle data models and communication between Front- and Backend
+## Communication between Front- and Backend
 
 ### Model Classes
 
@@ -118,8 +125,8 @@ This allows for example the usage of ```instanceof```.
 In order to prevent a big number of files, related classes can be put into the same file.
 Here is an example of a data model:
 
-Example: `statistics.ts`
 ```ts
+// statistics.ts
 export class Statistics {
     @Type(() => ResemblanceStatistics)
     resemblance: ResemblanceStatistics;
@@ -129,54 +136,63 @@ export class Statistics {
 }
 ```
 
-### Communication
+### Sending Data
 
 Communication is done via Angular's `HttpClient`.
-
 Doing this allows the easy conversion between the type safe data classes and the JSON strings that are transferred between the Front- and Backend.
-
-This is used in several different components of the application. An example can be found in `upload-file.component.html` in line 13:
+This is used in several different components of the application. An example can be found in `upload-file.component.html` in line 37:
 
 ```html
+<!-- upload-file.component.html -->
 <div class="py-2">
-    <button mat-raised-button color="primary" (click)="uploadFile()" [disabled]="!this.file">Confirm file and start configuration</button>
+    <button mat-raised-button color="primary" (click)="uploadFile()" [disabled]="!this.dataFile">Confirm file and
+        start configuration
+    </button>
 </div>
 ```
 
 Here the `uploadFile()` function is called (from `upload-file.component.ts`):
 
 ```ts
+// upload-file.component.ts
 uploadFile() {
-	this.loadingService.setLoadingStatus(true);
+    this.loadingService.setLoadingStatus(true);
 
-	if (this.file) {
-		this.fileService.setFile(this.file);
-		this.fileService.setFileConfiguration(this.fileConfiguration)
+     if (!this.dataFile) {
+         return;
+     }
 
-		this.dataService.estimateData(this.file, this.fileService.getFileConfiguration()).subscribe({
-			next: (d) => this.handleUpload(d),
-			error: (e) => this.handleError(e),
-		});
-	}
+     this.fileService.uploadFile(this.dataFile, this.fileConfiguration).subscribe({
+         next: value => {
+            // ...
+         },
+         error: err => {
+            // ...
+         },
+     });
 }
 ```
 
-This function uses a service class (DataService - `data.service.ts`) that provides an Observable object from a HTTPClient in its `estimateData` function:
+This function uses a service class (FileService - `file.service.ts`) that provides an Observable object from a HTTPClient in its `uploadFile` function:
 
 ```ts
-estimateData(file: File, fileConfig: FileConfiguration): Observable<Object> {
-	const formData = new FormData();
+// file.service.ts
+public uploadFile(file: File, fileConfiguration: FileConfiguration): Observable<FileInformation> {
+    const formData = new FormData();
 
-	formData.append("file", file);
+    formData.append("file", file);
+    const fileConfigString = JSON.stringify(fileConfiguration);
+    formData.append("fileConfiguration", fileConfigString);
 
-	const fileConfigString = JSON.stringify(fileConfig);
-	formData.append("fileConfiguration", fileConfigString);
-
-	return this.httpClient.post(this.baseUrl + "/datatypes", formData);
+    return this.httpClient.post<FileInformation>(this.baseUrl, formData).pipe(tap(value => {
+        this._fileInfo = value;
+    }));
 }
 ```
 
-By doing this we can perform asynchronous requests that do not freeze the application. If we need to prevent user input during this time we need to manually freeze the application e.g. with the already implemented loading screen:
+By doing this we can perform asynchronous requests that do not freeze the application.
+If we need to prevent user input during this time we need to manually freeze the application e.g. with the already implemented loading screen:
+
 ```ts
 //enable
 this.loadingService.setLoadingStatus(true);
@@ -186,15 +202,18 @@ this.loadingService.setLoadingStatus(false);
 
 ![loading image](/img/contribution/page-loading.png)
 
-### Caching
-Some data from the backend is used in different components.
+### Fetching Data
+
+When fetching data from the backend, utilizing code patterns can reduce the number of HTTP calls.
+Using naive approaches can result into duplicate requests, for example if data from the backend is used in different components.
 Additionally, data stored in components is lost when an instance of the component gets destroyed, for example when switching to another step.
 This would trigger another request when creating the component again at a later time.
 In order to prevent fetching the same data multiple times, specific service patterns can be used.
 
-If the required data will never change, the following pattern as used in the `appConfigService` can be used.
+If the required data never changes, the following pattern as used in the `AppConfigService` can be used.
 
 ```ts
+// app-config.service.ts
 export class AppConfigService {
     private readonly baseURL = environments.apiUrl;
 
@@ -231,60 +250,127 @@ export class AppConfigService {
 }
 ```
 
-# Add new views
-Every new view should also be a part of a feature. Every feature can have multiple different views that are necessary to complete a feature. If helpful, features can also be split into multiple sub-features (e.g. `feautre_a` & `feature_b`).
-In general, as every view is a component, the view can also be associated with logic. However this logic should read from the view or change the view in some way. Every action that is not dependent on the view itself should be moved to a service class.
+The result of the request gets cached in the service and can be reused.
+Ongoing requests are stored as observables, which can be used multiple times because of the `shared()` method inside the `pipe()` method.
+Appending a `$` character to variable names is a common convention to mark `Observables`
 
-# Data persistence between views
-There are two different ways that data persistence is handled in the current state of the platform.
-The first possibility is already described with "How to handle data models and communication between Front- and Backend". That means that in order to persist data, it is sent to the backend and saved in the database. A separate endpoint in the backend needs to be existant for this to work.
+The `appConfig$` is used for example in the `AppComponent`.
 
-The other possiblity involves the creation of simple data classes in the frontend. Their sole purpose is to store different attributes and offer getter and setter methods.
-
-Example `file.service.ts`:
 ```ts
-import { FileConfiguration, FileType } from "../../../shared/model/file-configuration";
-import { CsvFileConfiguration, Delimiter, LineEnding, QuoteChar } from "../../../shared/model/csv-file-configuration";
+// app.component.ts
+export class AppComponent implements OnInit {
+    protected appConfig$: Observable<AppConfig>;
 
-export class FileService {
-	file: File;
-    fileConfiguration: FileConfiguration;
+    constructor(
+        private readonly appConfigService: AppConfigService,
+    ) {
+    }
 
-	constructor() {
-		this.fileConfiguration = new FileConfiguration(
-			FileType.CSV,
-			new CsvFileConfiguration(
-				Delimiter.COMMA,
-				LineEnding.LF,
-				QuoteChar.DOUBLE_QUOTE,
-				true
-			)
-		);
-	}
-
-	public getFile(): File {
-		return this.file;
-	}
-
-	public setFile(value: File) {
-		this.file = value;
-	}
-
-	public getFileConfiguration(): FileConfiguration {
-		return this.fileConfiguration;
-	}
-
-	public setFileConfiguration(value: FileConfiguration) {
-		this.fileConfiguration = value;
-	}
+    public ngOnInit(): void {
+        this.appConfig$ = this.appConfigService.appConfig$;
+    }
 }
 ```
-Additionally we can use Angular providers to establish the level for which the data should be persisted:
 
-A provider on module level is added in said module:
-Example `data-upload.module.ts`:
+This Observable then can be used in the HTML template.
+Angular provides a `async` pipeline which simplifies the usage and automatically subscribes to the Observable when needed and unsubscribes after the component gets destroyed.
+Directly using the `appConfig$` from the `AppConfigService` would result in an endless loop, so it is important to store the `Observable` as a member inside the component.
+
+```html
+<!-- app.component.html -->
+<ng-container *ngIf="appConfig$ | async as appConfig">
+</ng-container>
+```
+
+If the data changes over time, the data can be invalidated by setting the values back to `null`.
+For automatic synchronization with the backend, a pattern like in the `ProjectConfigurationService` can be used.
+
 ```ts
+// project-configuration.service.ts
+export class ProjectConfigurationService {
+    private _projectSettings$: Observable<ProjectSettings> | null = null;
+    private projectSettingsSubject: BehaviorSubject<ProjectSettings> | null = null;
 
+    constructor(
+        private readonly http: HttpClient,
+    ) {
+    }
+
+    private initializeProjectSettings(): void {
+        if (!this.projectSettingsSubject) {
+            this.projectSettingsSubject = new BehaviorSubject<ProjectSettings>(new ProjectSettings());
+            this._projectSettings$ = this.fetchProjectSettings().pipe(
+                // ...
+                tap(value => {
+                    this.projectSettingsSubject?.next(value);
+                }),
+                shareReplay(1),
+            );
+        }
+    }
+
+    public get projectSettings$(): Observable<ProjectSettings> {
+        this.initializeProjectSettings();
+        return this._projectSettings$!;
+    }
+
+    public setProjectSettings(value: ProjectSettings): Observable<void> {
+        this.projectSettingsSubject!.next(value);
+        return this.putProjectSettings(value);
+    }
+}
+```
+
+Instead of storing the value directly as a member, it is encapsulated inside a `BehaviorSubject`, which can emit newer values over time.
+When subscribing to observables manually instead of using Angular's `async` pipe, it is good practice to unsubscribe from the observable when the component gets destroyed.
+
+```ts
+// data-configuration.component.ts
+export class DataConfigurationComponent implements OnInit, OnDestroy {
+    private dataConfigurationSubscription: Subscription;
+
+    ngOnInit(): void {
+        this.isFileTypeXLSX$ = this.fileService.fileInfo$.pipe(
+            map(value => {
+               return value.type === FileType.XLSX;
+            })
+        );
+
+        this.dataConfigurationSubscription = this.configuration.dataConfiguration$.subscribe(value => {
+            // ...
+        });
+    }
+
+    ngOnDestroy() {
+        this.dataConfigurationSubscription.unsubscribe();
+    }
+}
+```
+
+## Adding new Features
+
+### Adding new views
+Every new view should also be a part of a feature.
+Every feature can have multiple different views that are necessary to complete a feature.
+If helpful, features can also be split into multiple sub-features (e.g. `feature_a` & `feature_b`).
+In general, as every view is a component, the view can also be associated with logic.
+However this logic should read from the view or change the view in some way.
+Every action that is not dependent on the view itself should be moved to a service class.
+
+### Handling data persistence between views
+There are two different ways that data persistence is handled in the current state of the platform.
+The first possibility is already described in [Communication between Front- and Backend](#communication-between-front--and-backend).
+That means that in order to persist data, it is sent to the backend and saved in the database.
+A separate endpoint in the backend needs to be existent for this to work.
+
+The other possibility involves the creation of simple data classes in the frontend.
+Their sole purpose is to store different attributes and offer getter and setter methods.
+
+Additionally we can use Angular providers to establish the level for which the data should be persisted:
+A provider on module level is added in said module:
+
+```ts
+// data-upload.module.ts
 @NgModule({
 	declarations: [
 		//declarations
@@ -302,11 +388,13 @@ Example `data-upload.module.ts`:
 })
 export class DataUploadModule {}
 ```
-As you can see, inside the data upload module - the module definition for the data upload feature - the FileService is registered as a provider. That means everytime the module is imported and used, a new instance for the file service is created. Between all files inside the module this single instance is automatically injected by defining it in a constructor of a component:
 
-Example `upload-file.component.ts`:
+As you can see, inside the data upload module - the module definition for the data upload feature - the FileService is registered as a provider.
+That means everytime the module is imported and used, a new instance for the file service is created.
+Between all files inside the module this single instance is automatically injected by defining it in a constructor of a component:
 
 ```ts
+// upload-file.component.ts
 export class UploadFileComponent {
 	// class attributes
 
@@ -320,51 +408,111 @@ export class UploadFileComponent {
 }
 ```
 
-To achieve the same on the root application level, the provider has to registered in the root module.
+To achieve the same on the root application level, the provider has to be registered in the root module.
 
-# Managing and synchronizing configurations
-Managing generic configurations can be done by using the [ConfigurationsService](cinnamon-frontend/src/app/shared/services/configuration.service.ts).
-This service provides the utility to import/export configurations and automatically synchronizations with the backend.
-In order to use the ConfigurationService, the configuration has to be registered beforehand by calling the `registerConfiguration(data: ConfigurationRegisterData)` function with a configured [ConfigurationRegisterData](/cinnamon-frontend/src/app/shared/model/configuration-register-data.ts) object.
-The details are described in the documentation of the fields.
-The configurations can be registered at application start by using the provider in the module declaration.
-Below is an example from the [DataUploadModule](cinnamon-frontend/src/app/features/data-upload/data-upload.module.ts).
+### Working with Angular Forms
+
+Generally, there are two type of forms in Angular: Reactive forms and Template-driven forms.
+Reactive forms are specified by a `FormGroup` object bound to the inputs by using `formGroup` and `formControl` directives inside the HTML template.
+Template-driven forms on the other hand need an underlying object for defining the structure and use `[(ngModel)]` directives for binding.
+Cinnamon mostly uses reactive forms, for example in all of the configuration pages.
+
+In template-driven forms, validation can be performed with already existing or custom validation directives.
+For validating reactive forms, the validation functions have to be added to the `FormControl` object.
+Custom validators like `appNoSpaceValidator` can be created by implementing a `ValidatorFn` for reactive forms or by implementing the `Validator` interface for template-driven forms.
 
 ```ts
+// no-space-validator.directive.ts
+export function noSpaceValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return (typeof control.value === 'string') && control.value.trim().includes(" ")
+        ? { noSpace: { value: control.value } }
+        : null
+    }
+}
+
+@Directive({
+    selector: '[appNoSpaceValidator]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useExisting: NoSpaceValidatorDirective,
+            multi: true,
+        }
+    ],
+    standalone: false
+})
+export class NoSpaceValidatorDirective implements Validator {
+
+  constructor() { }
+
+  validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    return noSpaceValidator()(control);
+  }
+}
+```
+
+
+### Managing and synchronizing configurations
+
+Managing generic configurations can be done by using the `ConfigurationsService`.
+This service provides utility to import/export configurations and for automatic synchronization with the backend.
+In order to use the `ConfigurationService`, the configuration has to be registered beforehand by calling the `registerConfiguration(data: ConfigurationRegisterData)` function with a configured `ConfigurationRegisterData` object.
+The details are described in the documentation of the fields.
+The configurations can be registered at application start by using the provider in the module declaration.
+Below is an example from the `DataUploadModule`.
+
+```ts
+// data-upload.module.ts
 @NgModule({
     // ...
     providers: [
         // ...
-        {
-            // Calls the useFactory function when starting the application
-            provide: APP_INITIALIZER,
-            useFactory: (service: DataConfigurationService) => function () { return service.registerConfig(); },
-            deps: [DataConfigurationService],
-            multi: true,
-        },
+		provideAppInitializer(() => {
+            const initializerFn = ((service: DataConfigurationService) => function () { return service.registerConfig(); })(inject(DataConfigurationService));
+            return initializerFn();
+        }),
     ],
 })
 export class DataUploadModule {}
 ```
 
 A registered configuration gets fetched when the page is loaded.
-For this the auth guard [state-guard](cinnamon-frontend/src/app/core/guards/state.guard.ts) is used to trigger the request.
+For this the constructor of `app.component.ts` is used to initialize the `StateManagementService` which triggers the request.
 When exporting or importing a configuration, the configuration gets pushed to the backend.
 
-# Working with configuration pages
-The [ConfigurationPage](cinnamon-frontend/src/app/shared/components/configuration-page) component and the [AlgorithmService](cinnamon-frontend/src/app/shared/services/algorithm.service.ts) together provide the utility to display a form based on a given configuration definition.
+### Working with configuration pages
+The `ConfigurationPage` component and the `AlgorithmService` together provide the utility to display a form based on a given configuration definition.
 Each step that uses this utility should have its own module.
-See the [Synthetization](cinnamon-frontend/src/app/features/synthetization) as an example.
+See the Synthetization as an example.
 A minimal setup requires a module containing a component that includes the `ConfigurationPage` component and a service that extends the `AlgorithmService`.
 The module declaration and the service are used to register the configuration as shown in the previous section.
-Additionally, three functions have to be implemented in the service.
+Additionally, five functions have to be implemented in the service.
 
 ```ts
+// algorithm.service.ts
 export abstract class AlgorithmService {
+
     /**
      * Name of the step. Must be equal to the name in Spring's application.properties.
      */
     abstract getStepName(): string;
+
+    /**
+     * Name of the configuration.
+     * TODO(DPM) fetch from backend
+     */
+    abstract getConfigurationName(): string;
+
+    /**
+     * Name of the stage the configured job belongs to.
+     */
+    abstract getExecStepName(): string;
+
+    /**
+     * Name of the jobs to be configured by this configuration page.
+     */
+    abstract getJobs(): string[];
 
     /**
      * Creates the YAML configuration object sent to the backend as well as to the external module.
@@ -393,6 +541,7 @@ Inside the HTML the `ConfigurationPage` has to be included as follows.
 In the component's declarations, an implementation of the algorithm service has to be provided.
 
 ```ts
+// synthetization-configuration.component.ts
 @Component({
     // ...
     providers: [
@@ -407,9 +556,10 @@ export class SynthetizationConfigurationComponent {
 }
 ```
 
-The `ConfiguraitonPage` automatically injects the provided service.
+The `ConfigurationPage` automatically injects the provided service.
 
 ```ts
+// synthetization-configuration.component.ts
 export class ConfigurationPageComponent implements OnInit {
     // ...
     constructor(
@@ -421,26 +571,58 @@ export class ConfigurationPageComponent implements OnInit {
     // ...
 }
 ```
-## Internal workflow
+
+#### Internal workflow
 The page fetches the step configuration from the API using the step name defined inside the algorithm service implementation.
 Then the available algorithms are fetched and displayed in the selection input.
-When selecting an algorithm, the definition is fetched and the form is created dynamically by using the ["dynamic form"](https://angular.dev/guide/forms/dynamic-forms) pattern.
+When selecting an algorithm, the definition is fetched and the form is created dynamically by using ["dynamic reactive forms"](https://angular.dev/guide/forms/dynamic-forms).
 For that, the form object and the corresponding HTML form are created with a matching structure.
 
-## New input types
-New form elements can be added by creating a new switch case inside [configuration-input.component.html](cinnamon-frontend/src/app/shared/components/configuration-input/configuration-input.component.html).
-For this, a new value of [ConfigurationInputType](cinnamon-frontend/src/app/shared/model/configuration-input-type.ts) should be created.
-In special cases, the function `setToDefault()` inside [configuration-input.component.ts](cinnamon-frontend/src/app/shared/components/configuration-input/configuration-input.component.ts) has to be adapted as well.
-New validations can be added by modifying the `createFrom` method inside [configuration-form.component.ts](cinnamon-frontend/src/app/shared/components/configuration-form/configuration-form.component.ts) and by adding new `<mat-error>` elements to the input in [configuration-input.component.html](cinnamon-frontend/src/app/shared/components/configuration-input/configuration-input.component.html)
-For complex inputs, the `createForm` method must be adapted as well to create the matching form object.
+Initial values of inputs should be set when creating the form object.
+Changing the values afterwards will trigger change events which may lead to unexpected behaviour during the initialization phase.
 
-# Styling conventions
-It is also possible to define component specific styles. Upon creation, every components creates its own stylesheet and links it to the class definition. If a styling should be limited to only the component and should not be applied to anything else these stylesheets should be used.
-For more general styling the global stylesheets in `src/app/styles/..` should be used. Examples for such styling could be layout specifc rules, colors, reappearing elements (that are not the component itself), etc. Currently these are rules for viewsizes, the general layout, some reusable variables, colors and icons.
-Additionally all stylesheets use `.less`. In order to apply rules to the angular material components, `src/app/styles/angular-material.scss` has to be used, as the specifc settings can only be overwritten with `.scss` stylesheets.
+#### Adding new input types
+New form elements can be added by creating a new switch case inside `configuration-input.component.html`.
+For this, a new value of `ConfigurationInputType` should be created.
+In special cases, the function `setToDefault()` inside `configuration-input.component.ts` has to be adapted as well.
+New validations can be added by modifying the `createForm` method inside `configuration-form.component.ts` and by adding new `<mat-error>` elements to the input in `configuration-input.component.html`.
+Complex components can also be put into their own component.
 
-# Usage of Angular Material components
-In general [the Angular material documentation](https://material.angular.io/components/categories) is a good place to look for examplse on how to use the components.
+### Working with execution pages
+
+Execution pages have been abstracted similar to the configuration pages.
+The service `ExecutionStepService` has to be implemented for each execution page by implementing two methods.
+
+```ts
+// execution-step.service.ts
+export abstract class ExecutionStepService {
+    /**
+     * Name of the step. Must be equal to the name of the step in the backend.
+     */
+    protected abstract getStageName(): string;
+
+    /**
+     * Corresponding step of the execution page.
+     * @protected
+     */
+    protected abstract getStep(): Steps;
+}
+```
+
+A component similar to the `ConfigurationPageComponent` does not exist for execution pages because of the differences when displaying results of processes.
+Instead the existing components `execution.component.ts` and `evaluation.component.ts` can be used as templates when developing new execution pages.
+
+## Styling conventions
+Upon creation, every components creates its own stylesheet and links it to the class definition.
+If a styling should be limited to only the component and should not be applied to anything else these stylesheets should be used.
+For more general styling the global stylesheets in `src/app/styles/..` should be used.
+Examples for such styling could be layout specific rules, colors, reappearing elements (that are not the component itself), etc.
+Currently these are rules for viewsizes, the general layout, some reusable variables, colors and icons.
+Additionally all stylesheets use `.less`.
+In order to apply rules to the angular material components, `src/app/styles/angular-material.scss` has to be used, as the specific settings can only be overwritten with `.scss` stylesheets.
+
+### Usage of Angular Material components
+In general [the Angular material documentation](https://material.angular.io/components/categories) is a good place to look for examples on how to use the components.
 
 The Angular material components have to be used in a unique way and work differently from normal froms that were created with bootstrap.
 Most of the time the Angular material components have their own selector, some of them are used as a directive:
@@ -448,63 +630,20 @@ Most of the time the Angular material components have their own selector, some o
 Example for Input field from `attribute-configuration.component.ts`:
 
 ```html
+<!-- attribute-configuration.component.html -->
 <mat-form-field>
-	<mat-label>Column name</mat-label>
-	<input type="text" matInput [id]="'name_' + attrNumber" [(ngModel)]="column.name" appTrimValue required appNoSpaceValidator #name="ngModel" (change)="column.name = column.name.trim()" />
-	<mat-error *ngIf="name.errors?.['required']">Name must not be blank</mat-error>
-	<mat-error *ngIf="name.errors?.['noSpace']">Name must not contain spaces</mat-error>
+    <mat-label>Column name</mat-label>
+    <input type="text" matInput [id]="'name_' + attrNumber" (blur)="trimValue('name');" formControlName="name"/>
+    <mat-error *ngIf="columnConfigurationForm.controls['name'].hasError('noSpace')">Name must not contain spaces</mat-error>
+    <mat-error *ngIf="columnConfigurationForm.controls['name'].hasError('required')">Name must not be blank</mat-error>
+    <mat-error *ngIf="columnConfigurationForm.controls['name'].hasError('unique')">Name must be unique</mat-error>
 </mat-form-field>
 ```
-Both examples can be seen in the shown code snippet. Form inputs have to be included in a `<mat-form-field>` element. A normal input element is enriched by the `matInput` directive to transform it to an Angular material input. The angular directives can be used like they normally would.
-Validation can be performed with already existing or custom validation directives like `appNoSpaceValidator` that is an implementation of the Validator interface (Example from `no-space-validator.directive.ts`):
-```ts
-@Directive({
-  selector: '[appNoSpaceValidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useExisting: NoSpaceValidatorDirective,
-      multi: true,
-    }
-  ],
-})
-export class NoSpaceValidatorDirective implements Validator {
 
-  constructor() { }
+Both examples can be seen in the shown code snippet.
+Form inputs have to be included in a `<mat-form-field>` element.
+A normal input element is enriched by the `matInput` directive to transform it to an Angular material input.
+The angular directives can be used like they normally would.
 
-  validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return noSpaceValidator()(control);
-  }
-}
-```
-The element is available with the model tag `#name="ngModel"` that can be used in the typescript class (Example from `attribute-configuration.component.ts`):
-```ts
-@ViewChild("name") nameInput: NgModel;
-```
-
-The validation is automatically performed when registering the element upon loading (Example from `attribute-configuration.component.ts`):
-```ts
-ngAfterViewInit(): void {
-	this.nameInput.statusChanges?.subscribe(() => {
-		this.onValidation.emit(this.nameInput.valid ?? true)
-	});
-}
-```
-
-The errors are then available in an object for the ViewChild name (example from `attribute-configuration.component.html`):
-```html
-name.errors?.['noSpace']
-```
-Where the name of the validation entry is defined in the validation function (Example from `no-space-validator.directive.ts`):
-```ts
-export function noSpaceValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      return (typeof control.value === 'string') && control.value.trim().includes(" ")
-        ? { noSpace: { value: control.value } }
-        : null
-    }
-}
-```
-
-
-For specific Angular material elements it can be useful to create custom components with dynamic text that reduces the amount of code everytime the element is used. This has been done for the `info-card.component.html` and the  `information-dialog.component.html`
+For specific Angular material elements it can be useful to create custom components with dynamic text that reduces the amount of code everytime the element is used.
+This has been done for the `info-card.component.html` and the `information-dialog.component.html`
