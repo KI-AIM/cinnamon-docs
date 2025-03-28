@@ -1,20 +1,65 @@
 # Synthetic Data Generation Algorithms
+This chapter provides an overview of the synthetic data generation algorithms implemented in our software. Each method is briefly described, highlighting its key features, strengths, and suitable use-cases to help users select the most appropriate algorithm for their specific requirements.
 
 ## CTGAN
 
-CTGAN (Conditional Tabular GAN) is a GAN-based method specifically designed for generating synthetic tabular data. It addresses the challenges of modeling tabular data with mixed categorical and continuous columns and imbalanced categorical columns.
+CTGAN (Conditional Tabular GAN) is a GAN-based algorithm specifically designed for generating synthetic tabular data. It effectively addresses challenges related to datasets containing both categorical and numerical columns, as well as imbalanced categorical distributions.
 
 **Key features:**
-- Uses mode-specific normalization for continuous columns
-- Employs conditional generation to handle imbalanced categorical data
-- Applies training-by-sampling to manage multi-dimensional categorical columns
+- Applies mode-specific normalization for numerical columns.
+- Uses conditional data generation to handle imbalanced categorical data.
+- Implements training-by-sampling for categorical variables with complex relationships.
+
+**Github Source:**  
+https://github.com/vanderschaarlab/synthcity
+
+**Literature:**  
+Lei Xu, Maria Skoularidou, Alfredo Cuesta-Infante, Kalyan Veeramachaneni. Modeling Tabular data using Conditional GAN. NeurIPS, 2019.
 
 ## TVAE
 
-TVAE (Tabular Variational Autoencoder) is a deep learning method that uses variational autoencoders adapted for tabular data generation. It learns the underlying data distribution and generates synthetic samples that preserve statistical properties of the original data.
+TVAE (Tabular Variational Autoencoder) is a deep-learning approach based on variational autoencoders, specifically adapted for synthetic tabular data generation. It learns underlying data distributions, enabling it to generate realistic synthetic samples with preserved statistical properties.
 
 **Key features:**
-- Employs a variational autoencoder architecture tailored for tabular data
-- Handles mixed data types (numerical and categorical)
-- Typically provides good performance on datasets with complex correlations
-- Often faster to train than GAN-based approaches
+- Employs variational autoencoder architecture optimized for tabular datasets.
+- Handles mixed-type columns (numerical and categorical) effectively.
+- Captures complex correlations between data columns.
+- Usually faster to train compared to GAN-based approaches.
+
+**Github Source:**  
+https://github.com/vanderschaarlab/synthcity
+
+**Literature:**  
+Lei Xu, Maria Skoularidou, Alfredo Cuesta-Infante, Kalyan Veeramachaneni. Modeling Tabular data using Conditional GAN. NeurIPS, 2019.
+
+## Bayesian Network
+
+Bayesian Network is a probabilistic graphical model that explicitly represents conditional dependencies among variables through directed acyclic graphs (DAGs). It is effective in generating synthetic data that maintains underlying statistical relationships and dependencies.
+
+**Key features:**
+- Clearly represents conditional dependencies visually and structurally.
+- Suitable for data requiring interpretable relationships among variables.
+- Handles discrete and continuous variables effectively.
+
+**Github Source:**  
+https://github.com/vanderschaarlab/synthcity
+
+**Literature:**  
+Jankan, Ankur and Panda, Abinash, "pgmpy: Probabilistic graphical models using python, Proceedings of the 14th Python in Science Conference (SCIPY 2015), 2015.
+
+## Adversarial Random Forest (ARF)
+
+Adversarial Random Forest (ARF) combines Random Forest models with adversarial training techniques to enhance the quality of synthetic data generation. It generates synthetic data that closely matches the original dataset's statistical characteristics.
+
+**Key features:**
+- Integrates Random Forest modeling with adversarial learning concepts.
+- Accurately captures nonlinear and complex relationships in data.
+- Robust against overfitting, providing diverse and representative synthetic outputs.
+
+**Github Source:**  
+https://github.com/vanderschaarlab/synthcity
+
+**Literature:**  
+Watson, D.S., Blesch, K., Kapar, J. &amp; Wright, M.N.. (2023). Adversarial Random Forests for Density Estimation and Generative Modeling. Proceedings of The 26th International Conference on Artificial Intelligence and Statistics, in: Proceedings of Machine Learning Research 206:5357-5375.
+
+
