@@ -32,5 +32,9 @@ export default {
         title: 'Future Plans and Roadmap',
         type: 'doc'
     },
+    contribution: {
+        title: 'Contribution',
+        type: 'doc'
+    },
     acknowledgement: 'Acknowledgements'
 }
