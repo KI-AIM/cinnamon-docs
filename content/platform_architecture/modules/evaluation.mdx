@@ -1,18 +1,37 @@
-# Cinnamon Evalution
+# Cinnamon Evaluation
 
-The evaluation module analyses single datasets and compares tow datasets, i.e. the original and the anonymized dataset, by calculating statistics and metrics.
+The Cinnamon Evaluation Module is designed to analyze individual datasets and compare two datasets, such as the original and anonymized datasets, by calculating various statistics and metrics. The module evaluates both the resemblance of the anonymized data to the real data and its utility for machine learning tasks.
 
 ## Tasks
 
 Cinnamon Evaluation is responsible for the following tasks:
 
-### Calculation of general statistics
+### Data Preparation
 
-### Evaluation of machine learning utility
+The evaluation process begins with data preparation. This involves preprocessing the input datasets to ensure they are clean and compatible for analysis. Additionally, the module validates the real and anonymized datasets to ensure they meet the requirements for comparison, such as consistent structure, data types, and completeness.
 
-### Evaluation of resemblance
+### Evaluation of Resemblance 
+
+The module uses a variety of statistical metrics and distance functions to assess how closely the anonymized data resembles the real data. These metrics measure the structural and statistical similarities between the datasets, ensuring the anonymized data retains key characteristics of the original dataset. Examples of resemblance metrics include:
+
+
+### Evaluation of Utility 
+The module integrates functionalities to evaluate how well the anonymized data performs in machine learning tasks compared to the real data. This step ensures that the anonymized dataset is not only similar in structure but also usable in practical scenarrios for predictive modeling and analysis. Examples of utility evaluation methods include the training and testing of machine learning models on both datasets to make comparisions. These example models can be used to asses the utility but it is not limited to only these moddels:
+
+  - **K-Nearest Neighbors (KNN)**
+  - **Random Forest**
+  - **Logistic Regression**
+
+### Configuration of the Evaluation Process
+The evaluation process is fully configurable, allowing users to tailor it to their specific needs. For resemblance evaluation, users can select or deselect specific metrics, enabling a focused analysis of the aspects most relevant to their use case. Similarly, for machine learning utility evaluation, users can configure various options, such as selecting the machine learning models to be used. This flexibility ensures that the evaluation process aligns with the user's goals and provides meaningful insights.
+
+### APIs
+The Cinnamon Evaluation Module provides RESTful APIs for seamless integration with the Cinnamon Platform. These APIs enable users to:
+
+- Submit datasets for evaluation.
+- Configure evaluation parameters, such as metrics and comparison methods.
+- Trigger the evaluation process.
+- Retrieve the results, including detailed metrics of resemblance and utility.
 
 ## Architecture
-
-Cinnamon Evalution uses Python and Flask 3.
-Processes are stored in memory only so no database is used.
+The Cinnamon Evaluation Module is built with an architecture designed for efficient handling of complex workflows. The backend uses Python 3.10 with Flask 3 to create RESTful API endpoints that integrate with the Cinnamon Platform. It uses Python's multiprocessing library and threading to run tasks in parallel and make better use of resources. The module is deployed with Gunicorn, a Python WSGI HTTP server, to reliably handle multiple API requests at the same time. This design ensures the module runs smoothly, even with high workloads.
