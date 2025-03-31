@@ -1,16 +1,41 @@
 # Cinnamon Synthetization
 
+The Cinnamon Synthetization Module is a key component of the Cinnamon platform. It is responsible for generating synthetic data that mimics the structure and characteristics of real datasets. This module is designed to provide high-quality synthetic data for testing, development, analysis and data sharing purposes, enabling users to work with realistic datasets.
 
 ## Tasks
 
 Cinnamon Synthetization is responsible for the following tasks:
 
-### Synthetization
+### Data Preparation 
 
-Provides multiple synthetization algorithms
+Before synthetic data can be generated, the module provides preprocessing functionalities to prepare the input data. These include:
 
+- **Timestamp Handling**: Ensures proper formatting and consistency of date and time fields.
+- **Attribute Type Handling**: Identifies and processes different data types to ensure accurate synthetization.
+- **Data Cleaning**: Handles missing data and inconsistencies to prepare the dataset for synthetic generation.
+
+### Synthetic Data Generation
+
+The core functionality of the module is to generate synthetic datasets that preserve the statistical and structural properties of the original data. The module supports multiple synthetization techniques, including:
+
+- **Statistical Models**: Generates data using probabilistic distributions derived from the original dataset.
+- **Machine Learning Models**: Utilizes algorithms such as Generative Adversarial Networks (GANs) or other machine learning-based approaches to create realistic synthetic data.
+
+These techniques allow the module to produce high-quality synthetic data that reflects the original dataset's patterns and relationships.
+
+### Customization and Configuration
+
+The Synthetization Module allows users to adapt the data generation process to their specific needs. Users can configure the parameters of the synthesizers, such as the algorithms used and their respective settings, to control how the synthetic data is generated. Additionally, the sampling size can be adjusted to determine the amount of synthetic data produced.
+
+### APIs
+The Synthetization Module integrates seamlessly with the Cinnamon Platform by providing RESTful APIs. These APIs allow external systems or other modules to:
+
+- Import datasets and configurations for synthetization.
+- Trigger the synthetic data generation process.
+- Retrieve the generated synthetic datasets for further use.
+
+This API-driven approach ensures smooth integration into larger workflows and enables automation of the synthetization process.
 
 ## Architecture
 
-Cinnamon Synthetization uses Python and Flask 3.
-Processes are stored in memory only so no database is used.
+The Cinnamon Synthetization Module features an architecture for managing complex workflows. Its backend is developed using Python 3.10, with Flask 3 enabling the creation of lightweight RESTful API endpoints that seamlessly integrate with the Cinnamon Platform. The module leverages Python's multiprocessing library and threading for parallel task execution. It is deployed using Gunicorn, a robust Python WSGI HTTP server, which ensures reliable handling of multiple API requests concurrently. This streamlined architecture guarantees smooth and efficient operation, even under demanding conditions.
