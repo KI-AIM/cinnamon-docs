@@ -103,7 +103,7 @@ The following properties must be defined:
 | callback-host         | The host name of Cinnamon Platform under which the external server can reach it. Used for callbacks when a process has been finished.                                                   |
 | url-client            | URL under which the user's browser can reach the external server.                                                                                                                      |
 | url-server            | URL under which the platform can reach the external server.                                                                                                                            |
-| max-parallel-processes| The number of processes the server can run at the same time. If starting a process would exceed the max number, the process will be scheduled and started when capacities are available. This property is also available on the endpoint level. |
+| max-parallel-processes| The number of processes the server can run at the same time. If starting a process would exceed the maximum number, the process will be scheduled and started when capacities are available. This property is also available on the endpoint level. |
 
 Below is an example of the default configuration for the anonymization server.
 
@@ -141,7 +141,7 @@ This is done by creating entries in the form of `cinnamon.external-server-endpoi
 | callback-part-name | Name of the request part for the callback URL, defaults to `callback`. |
 | cancel-endpoint    | Endpoint for cancelling a process. |
 | cancel-http-method | HTTP method used for cancel request, defaults to `post`. |
-| configuration-encoding | Encoding of the configuration. Options are:<br/><br/>`json`: JSON body<br/>`file`: YAML file. |
+| configuration-encoding | Encoding of the configuration. Options are:<br/><br/>`json`: JSON inside body.<br/>`file`: YAML inside a file. |
 | configuration-name | Name of the configuration to be used. |
 | configuration-part-name | Name of the request for the configuration. |
 | external-server-index | Index of corresponding external server. |
@@ -162,18 +162,18 @@ Input datasets can be defined using `cinnamon.external-server-endpoints.<numeric
 
 | Property | Description |
 | - | - |
-| data-configuration-name | Name foe the request parameter for the dataset configuration if encoding is `file`. |
-| encoding | Encoding of the dataset. Options are:<br/><br/>`file`: Data as CSV file and separate data configuration.<br/>`json`: Date set and data configuration as JSON body. |
+| data-configuration-name | Name of the request parameter for the dataset configuration if encoding is `file`. |
+| encoding | Encoding of the dataset. Options are:<br/><br/>`file`: Data as CSV file and separate data configuration (see data-configuration-name).<br/>`json`: Dateset and data configuration as JSON body. |
 | file-name | Name of the file if encoding is `file`. |
 | part-name | Name of the request part for the data. |
-| selector | Selects the dataset. Options are:<br/><br/>`HOLD_OUT`: Hold out split of original dataset<br/>`LAST_OR_ORIGINAL`: Last result or the original dataset<br/>`ORIGINAL`: Original dataset<br/>`OWNER`: The associated dataset (used for statistics) |
+| selector | Selects the dataset. Options are:<br/><br/>`HOLD_OUT`: Hold out split of original dataset.<br/>`LAST_OR_ORIGINAL`: Last result or the original dataset.<br/>`ORIGINAL`: Original dataset.<br/>`OWNER`: The associated dataset (used for statistics). |
 
 Outputs are any files created by the processes and can be defined in the following form: `cinnamon.external-server-endpoints.<numerical key>.outputs[<index>].<property>`.
 The following properties have to be defined:
 
 | Property | Description |
 | - | - |
-| encoding | Type of the output. Options are:<br/><br/>`DATA`: Data as CSV file<br/>`DATA_SET`: Dataset with configuration as JSON<br/>`ERROR`: Error message<br/>`FILE`: Generic file (used for for example statistics, interpretation is done by the frontend, also other metadata like synth model) |
+| encoding | Content of the output. Options are:<br/><br/>`DATA`:  Data as a CSV file.<br/>`DATA_SET`: Dataset and data configuration as JSON inside the body.<br/>`ERROR`: Error message as plain text.<br/>`FILE`: Generic file with arbitrary content (used for example for statistics or additional data from the synthetization module). |
 | part-name | Name of the request part. |
 
 This is a complete example for the anonymization process:
@@ -219,7 +219,7 @@ Steps are defined by creating properties in the form of `cinnamon.steps.<step na
 | - | - |
 | external-server-endpoint-index | Numeric key of the endpoint to be used |
 | fix-status | Specific for the Cinnamon Synthetization module. Updates the process status after it is finished. |
-| type | What type of process Options are:<br/><br/>`data_processing`: Marks process to creates a new dataset<br/>`evaluation`: Marks process to return evaluation results |
+| type | The type of the process. Options are:<br/><br/>`data_processing`: Marks process to create a new dataset.<br/>`evaluation`: Marks process to return evaluation results. |
 
 The following examples shows the step for the anonymization job:
 
@@ -252,7 +252,7 @@ The following variables can be configured using the `.env` file:
 
 | Environment Variable | Description |
 | - | - |
-| IS_DEMO_INSTANCE | Flag to enable demo instance, defaults to "false". |
+| IS_DEMO_INSTANCE | Flag to enable demo instance, defaults to `false`. |
 | PG_DATABASE | Name of the database. |
 | PG_PASSWORD | Password of the database user. |
 | PG_USERNAME | Name of the database user. |
