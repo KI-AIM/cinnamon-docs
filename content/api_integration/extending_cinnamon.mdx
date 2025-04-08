@@ -26,13 +26,14 @@ Cinnamon Platform provides one endpoint for receiving the results in a callback 
 
 ### Provide Available Algorithms
 
-**Description:** Provides a list of algorithms available in the module.
+**Description:**
 
-**URL:** Can be configured.
+Provides a list of algorithms available in the module.
 
-**HTTP Method:** GET<br/>
-
-**Response Type:** YAML<br/>
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* | GET | *None* | YAML |
 
 **Response Content:**<br/>
 
@@ -48,7 +49,7 @@ An algorithm has the following attributes:
 | URL | string | Path after the server URL for fetching the configuration definition of the algorithm. |
 | version | string | Version of the algorithm. |
 
-**Example:**
+**Response Example:**
 
 ```yaml
 algorithms:
@@ -62,17 +63,17 @@ algorithms:
 
 ### Provide Configuration Definitions
 
-**Description:** Provides the configuration definition for a specific algorithm.
+**Description:**
 
-**URL:** Provided by the [algorithm endpoint](#provide-available-algorithms).
+Provides the configuration definition for a specific algorithm.
 
-**HTTP Method:** GET<br/>
-
-**Response Type:** YAML<br/>
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Provided by the [algorithm endpoint](#provide-available-algorithms)* | GET | *None* | YAML |
 
 **Response Content:**<br/>
 
-#### Root
 The root element has same fields as a single algorithm in the [algorithm definition](#provide-available-algorithms) and additionally the fields of a [configuration group](#configuration-group).
 
 #### Configuration Group
@@ -123,7 +124,7 @@ The root element has same fields as a single algorithm in the [algorithm definit
 | min_value | number | Optional, `min_value` in [Input Definition](#input-definition) |
 | max_value | number | Optional, `max_value` in [Input Definition](#input-definition) |
 
-**Example:**
+**Response Example:**
 
 ```yaml
 name: ctgan
@@ -196,13 +197,14 @@ synthetization_configuration:
 
 ### Start Processes
 
-**Description:** Starts a specified algorithm
+**Description:**
 
-**URL:** Can be configured.
+Starts a specified algorithm
 
-**HTTP Method:** POST<br/>
-
-**Request Type:** multipart/form-data<br/>
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* | POST | multipart/form-data | JSON |
 
 **Request Content:**<br/>
 
@@ -212,8 +214,6 @@ synthetization_configuration:
 | *configuration* | The algorithm configuration. Name of the part can be configured. |
 | *callback* | URL for the result callback. Name of the part can be configured. |
 | session_key | The process ID in the platform. |
-
-**Response Type:** JSON<br/>
 
 **Response Content:**<br/>
 
@@ -227,52 +227,47 @@ The response can have the following properties, other properties are ignored:
 
 ### Monitor Process Status
 
-**Description:** Fetches the status of the specified process.
+**Description:**
 
-**URL:** Can be configured. The session_key can be injected into the URL.
+Fetches the status of the specified process.
 
-**HTTP Method:** GET<br/>
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* (`session_key` injectable) | GET | *None* | Text |
 
-**Response Type:** Any, interpreted as string.<br/>
-
-**Response Content:** Any, displayed as string.<br/>
+**Response Content:** Content is interpreted and displayed as plain text.<br/>
 
 ### Cancel Processes
 
-**Description:** Cancels the specified process.
+**Description:**
 
-**URL:** Can be configured. The session_key can be injected into the URL.
+Cancels the specified process.
 
-**HTTP Method:** Can be configured.<br/>
-
-**Request Type:** multipart/form-data<br/>
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* (`session_key` injectable) | *Configurable* | multipart/form-data | *None* |
 
 **Request Content:**<br/>
 
 | Parameter | Type | Description |
 | - | - | - |
-| pid | string | The process ID returned when starting a process. Null if none is returned. |
+| pid | string | The process ID returned when starting a process. Null if nothing was returned. |
 | session_key | string | The process ID in the platform. |
-
-**Response Type:** None<br/>
-
-**Response Content:** None<br/>
 
 ## Sending Results to Cinnamon Platform
 
-**Description:** Accepts the results of a process.
+**Description:**
 
-**URL:** URL is sent as a parameter when starting the process. Is always in the form of: `/api/process/<session_key>/callback`.
+Accepts the results of a process.
 
-**HTTP Method:** POST<br/>
-
-**Request Type:** multipart/form-data<br/>
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/api/process/<session_key>/callback` (Sent when starting the process) | POST | multipart/form-data | *None* |
 
 **Request Content:**<br/>
 
 The results of a process are defined in the [Platform Configuration](/configuration_customization/configuration_properties).
 They can contain data as CSV or JSON, statistics or an error message.
-
-**Response Type:** None<br/>
-
-**Response Content:** None<br/>
