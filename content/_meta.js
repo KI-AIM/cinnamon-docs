@@ -9,6 +9,7 @@ export default {
         type: 'doc'
     },
     data_management: {
+        display: 'hidden',
         title: 'Data Management',
         type: 'doc'
     },
@@ -25,16 +26,21 @@ export default {
         type: 'doc'
     },
     troubleshooting: {
+        display: 'hidden',
         title: 'Troubleshooting and Support',
         type: 'doc'
     },
     roadmap: {
         title: 'Future Plans and Roadmap',
-        type: 'doc'
+        type: 'doc',
+        display: 'hidden'
     },
     contribution: {
         title: 'Contribution',
         type: 'doc'
     },
-    acknowledgement: 'Acknowledgements'
+    acknowledgement: {
+        display: 'hidden',
+        title: 'Acknowledgements',
+    },
 }
