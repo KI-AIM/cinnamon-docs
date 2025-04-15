@@ -1,0 +1,273 @@
+# Module Specification
+
+This section describes the specifications a webservice has to implement so it can be used as a module for Cinnamon.
+
+## Concept of External Processing Servers
+As already described in the [Architecture section](/platform_architecture/modularization), the processing is done in external processing modules.
+Generally, there are two types of modules:
+1. Modules, that transform data and return a new or modified dataset.
+[Cinnamon Anonymization](/platform_architecture/modules/anonymization) and [Cinnamon Synthetization](/platform_architecture/modules/synthetization) are of this type.
+2. Modules, that analyse the data and return statistics.
+[Cinnamon Evaluation](/platform_architecture/modules/evaluation) and [Cinnamon Risk-Assessment](/platform_architecture/modules/risk_assessment) are of this type.
+
+These modules can be swapped with own implementations if they fulfill some requirements.
+
+## Required API Endpoints for External Processing Servers
+
+Webservices that want to function as external processing modules have to provide 5 API endpoints for the following tasks:
+- [Provide Available Algorithms](#provide-available-algorithms)
+- [Provide Configuration Definitions](#provide-configuration-definitions)
+- [Start Processes](#start-processes)
+- [Monitor Process Status](#monitor-process-status)
+- [Cancel Processes](#cancel-processes)
+
+In order to allow, details about these endpoints, like the URL path of, can be configured, see [Configuration](/configuration_customization/configuration_properties) for more details.
+Cinnamon Platform provides one endpoint for receiving the results in a callback request.
+
+### Provide Available Algorithms
+
+**Description:**
+
+Provides a list of algorithms available in the module.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* | GET | *None* | YAML |
+
+**Response Content:**<br/>
+
+Must return an array of available algorithms.
+An algorithm has the following attributes:
+
+| Parameter | Type | Description |
+| - | - | - |
+| Description | string | Description of the algorithm shown in the algorithm selection. |
+| display_name | string | Name displayed in the UI. |
+| name | string | Internal identifier. |
+| type | string | Type of data the algorithm supports. Currently not used as the platform only supports cross sectional data.  |
+| URL | string | Path after the server URL for fetching the configuration definition of the algorithm. |
+| version | string | Version of the algorithm. |
+
+**Response Example:**
+
+```yaml
+algorithms:
+- description: CTGAN is a GAN-based model that can generate synthetic tabular data.
+  display_name: Conditional Tabular GAN
+  name: ctgan
+  type: cross-sectional
+  URL: /synthetic_tabular_data_generator/synthesizer_config/ctgan.yaml
+  version: `0.1`
+```
+
+### Provide Configuration Definitions
+
+**Description:**
+
+Provides the configuration definition for a specific algorithm.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Provided by the [algorithm endpoint](#provide-available-algorithms)* | GET | *None* | YAML |
+
+**Response Content:**<br/>
+
+The root element has same fields as a single algorithm in the [algorithm definition](#provide-available-algorithms) and additionally the fields of a [configuration group](#configuration-group).
+
+#### Configuration Group
+| Parameter | Type | Description |
+| - | - | - |
+| display_name | string | Display name of the group. |
+| description | string | Description of the group. |
+| parameters | [`Input Definition[]`](#input-definition) | Configuration parameter in this group. |
+| configurations | Record of [ConfigurationGroup](#configuration-group) | Nested configuration groups. Displayed inside a collapsable. |
+| options | Record of [ConfigurationGroup](#configuration-group) | Nested configuration groups that can be toggled. Displayed inside a collapsable. |
+
+#### Input Definition
+| Parameter | Type | Description |
+| - | - | - |
+| name | `string` | Name for identifying the parameter in the configuration. |
+| type | [Input Type](#input-type) | Type of the parameter and the input. |
+| label | `string` | Label displayed in the UI. |
+| description | `string` | Description displayed in the UI. |
+| default_value | Depending on the type: `string` or `number` or `number[]` | The default value for the input. |
+| invert | `string` or `null` | If `type` is `attribute_list` and the value is not `null`, a list of unchecked attributes named as the value of this parameter will be added to the configuration.  |
+| min_value | `number` | Minimum value if `type` is `float` or `integer`. |
+| max_value | `number` | Maximum value if `type` is `float` or `integer`. |
+| values | `string[]` or `null` | If `type` is `float` or `string`, turns the input into a select input. |
+| switch | [`Switch[]`](#switch) | Optional, overwrites definitions based on values of other parameters. |
+
+#### Input Type
+| Name | Description | Input Element |
+| - | - | - |
+| attribute | Selection of one attribute inside the dataset. | One select input. |
+| attribute_list | Selection of multiple attributes inside the dataset. | One checkbox per attribute |
+| boolean | True of false. | One checkbox. |
+| float | Numeric number. | One numerical input. |
+| integer | Natural number. | One numerical input. |
+| list | List of number with dynamic size. | Multiple numerical inputs. |
+| string | Freetext or selection | One text input. |
+
+#### Switch
+| Name | Type | Description |
+| - | - | - |
+| depends_on | string | `name` of the depending configuration parameter. |
+| conditions | [`Condition[]`](#condition) | List of conditions and their changes. |
+
+#### Condition
+| Name | Type | Description |
+| - | - | - |
+| if | string | Value of the depending parameter. |
+| values | string | Optional, overwrites `values` in [Input Definition](#input-definition) |
+| min_value | number | Optional, `min_value` in [Input Definition](#input-definition) |
+| max_value | number | Optional, `max_value` in [Input Definition](#input-definition) |
+
+**Response Example:**
+
+```yaml
+name: ctgan
+version: "0.1"
+type: cross-sectional
+display_name: Conditional Tabular GAN
+description: Is a GAN for synthesizing cross-sectional data.
+URL: /start_synthetization_process/ctgan
+configurations:
+  model_parameter:
+    display_name: Model Parameters
+    description: Define the model parameters, that are used for training the model.
+    parameters:
+      - name: generator_dim
+        type: list
+        label: Generator Dimensions
+        description: Refers to the sizes of the intermediate layers in the generator network of a generative model.
+        default_value: [256, 256, 256]
+      - name: generator_lr
+        type: float
+        label: Generator Learning Rate
+        description: The learning rate used for updating the parameters of the generator network in CTGAN.
+        default_value: 0.004
+        min_value: 0.000000001
+        max_value: 1.0
+      - name: batch_size
+        type: integer
+        label: Batch Size
+        description: Number of training samples processed before the model's internal parameters are updated.
+        default_value: 500
+        min_value: 1
+        max_value: 1024
+      - name: log_frequency
+        type: boolean
+        label: Log Frequency
+        description: Whether to use log frequency of categorical levels in conditional sampling.
+        default_value: True
+  sampling:
+    display_name: Sampling
+    description: Define the sampling parameters, that are used for generating the synthetic data.
+    parameters:
+      - name: num_samples
+        type: integer
+        label: Samples
+        description: Configure the Samples.
+        default_value: 1000
+        min_value: 1
+        max_value: 1000000
+```
+
+The resulting configuration could look like this:
+
+```yaml
+synthetization_configuration:
+  algorithm:
+    synthesizer: ctgan
+    type: cross-sectional
+    version: \"0.1\"
+    model_parameter:
+      generator_dim:
+        - 256
+        - 256
+        - 256
+      generator_lr: 0.004
+      batch_size: 50
+      log_frequency: true
+    sampling:
+      num_samples: 100
+```
+
+### Start Processes
+
+**Description:**
+
+Starts a specified algorithm
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* | POST | multipart/form-data | JSON |
+
+**Request Content:**<br/>
+
+| Part | Description |
+| - | - |
+| *data* | The dataset selected in [Cinnamon's configuration](/configuration_customization/configuration_properties). Data and data configuration can be send in one part as JSON or as two separate parts as CSV and YAML. Name of the part/parts can be configured. |
+| *configuration* | The algorithm configuration. Name of the part can be configured. |
+| *callback* | URL for the result callback. Name of the part can be configured. |
+| session_key | The process ID in the platform. |
+
+**Response Content:**<br/>
+
+The response can have the following properties, other properties are ignored:
+
+| Parameter | Type | Description |
+| - | - | - |
+| error | string | Error message. |
+| message | string | Normal message. |
+| pid | string | The process ID for identifying the process on the external server. Can be empty if the ID of the platform is used. |
+
+### Monitor Process Status
+
+**Description:**
+
+Fetches the status of the specified process.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* (`session_key` injectable) | GET | *None* | Text |
+
+**Response Content:** Content is interpreted and displayed as plain text.<br/>
+
+### Cancel Processes
+
+**Description:**
+
+Cancels the specified process.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| *Configurable* (`session_key` injectable) | *Configurable* | multipart/form-data | *None* |
+
+**Request Content:**<br/>
+
+| Parameter | Type | Description |
+| - | - | - |
+| pid | string | The process ID returned when starting a process. Null if nothing was returned. |
+| session_key | string | The process ID in the platform. |
+
+## Sending Results to Cinnamon Platform
+
+**Description:**
+
+Accepts the results of a process.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/api/process/<session_key>/callback` (Sent when starting the process) | POST | multipart/form-data | *None* |
+
+**Request Content:**<br/>
+
+The results of a process are defined in the [Platform Configuration](/configuration_customization/configuration_properties).
+They can contain data as CSV or JSON, statistics or an error message.

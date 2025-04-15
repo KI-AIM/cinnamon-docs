@@ -1,0 +1,126 @@
+# API Overview
+
+## Cinnamon Platform
+
+Cinnamon Platform provides an Open API specification for all endpoints available at `/api-docs` and a Swagger userinterface at `/api/doc`.
+
+## Cinnamon Anonymization
+
+Cinnamon Anonymization provides an Open API specification for all endpoints available at `/api-docs/anonymization` and a Swagger userinterface at `/api/doc/anonymization`.
+
+## Cinnamon Synthetization
+
+### Available API Endpoints
+Cinnamon Synthetization provides the following API endpoints:
+
+#### Available Algorithms
+
+**Description:**
+
+Get available synthesizers with their metadata and URL which leads to the separate synthesizer frontend configurations.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/get_algorithms` | GET | *None* | YAML |
+
+**Request Content:**<br/>
+As specified [here](/api_integration/extending_cinnamon#provide-available-algorithms)
+
+#### Configuration Definitions
+
+**Description:**
+
+Get the frontend configuration as YAML for a specific synthesizer.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/synthetic_tabular_data_generator/synthesizer_config/<synthesizer>.yaml` | GET | *None* | YAML |
+
+**Request Content:**<br/>
+As specified [here](/api_integration/extending_cinnamon#provide-configuration-definitions)
+
+#### Start Processes
+
+**Description:**
+
+Starts the synthetization.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/start_synthetization_process/<synthesizer>` | POST | multipart/form-data | JSON |
+
+**Request Content:**<br/>
+
+| Parameter | Type | Description |
+| - | - | - |
+| data | CSV file | The real data. |
+| attribute_config | YAML file |  The attribute configuration. |
+| algorithm_config | YAML file | The synthesizer configuration. |
+| session_key | string | The session key. |
+| callback | string | The callback API. |
+
+**Response Content:**<br/>
+
+| Parameter | Type | Description |
+| - | - | - |
+| message | string | Normal message. |
+| pid | string | The process ID for identifying the process on the external server. Can be empty if the ID of the platform is used. |
+| session_key | string | The session key. |
+
+#### Monitor Process Status
+
+**Description:**
+
+Get the status of the synthetization process.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/get_status/<process_id>` | GET | *None* | JSON |
+
+**Response Example:**
+
+```json
+{
+    "session_key": "2b06eb33-d2df-4edb-ad6d-ca38c7ecb329",
+    "status": [
+        {"completed": "True", "duration": "0.20191478729248047", "step": "initialization"},
+        {"completed": "False", "duration": "Waiting", "remaining_time": "Waiting", "step": "fitting"},
+        {"completed": "False", "duration": "Waiting", "remaining_time": "Waiting", "step": "sampling"},
+        {"completed": "False", "step": "callback"}
+    ],
+    "synthesizer_name": "ctgan"
+}
+```
+
+#### Cancel Processes
+
+**Description:**
+
+A running process can be canceled by providing the session_key and pid in the form-data and executing following API:
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/cancel_synthetization_process` | POST | multipart/form-data | *None* |
+
+**Request Content:**<br/>
+
+| Parameter | Type | Description |
+| - | - | - |
+| pid | string | The process ID returned when starting a process. Null if nothing was returned. |
+| session_key | string | The process ID in the platform. |
+
+### Sending Results
+
+The callback API will receive the following artifacts in the form-data:
+
+| Parameter | Type | Description |
+| - | - | - |
+| synthetic_data | CSV file | The synthetic data. |
+| train | CSV file | The training data. |
+| test | CSV file | The testing data. |
+| model | Pickle file | The model. |
