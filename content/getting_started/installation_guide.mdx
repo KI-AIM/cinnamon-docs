@@ -13,12 +13,12 @@ The simplest way to install Cinnamon is by running the provided Docker Compose f
 
 ### Installation
 
-Download the [docker-compose.yml](https://github.com/KI-AIM/Cinnamon/blob/main/docker-compose.yml) and [.env](https://github.com/KI-AIM/Cinnamon/blob/main/.env) from Cinnamon's repository.
-Set the password of the database user in the downloaded .env file.
+Download the [docker-compose.yml](https://github.com/KI-AIM/Cinnamon/blob/main/docker-compose.yml) and [.env.example](https://github.com/KI-AIM/Cinnamon/blob/main/.env.example) from Cinnamon's repository.
+Rename the `.env.example` to `.env` and set the password of the database user in the PostgreSQL container by setting the `PG_PASSWORD` variable inside the `.env` file.
 
 ```sh
 # .env
-PG_PASSWORD="changeme"
+PG_PASSWORD=
 ```
 
 For a local installation for development or testing purposes, no further configuration is required.
