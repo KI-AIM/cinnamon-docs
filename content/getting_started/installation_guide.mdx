@@ -71,6 +71,7 @@ This will be improved later by adding an external configuration file.
 
 ### Prerequisites
 The following software is required for a manual installation:
+- Java 17
 - Python 3.10
 - Tomcat 10
 - PostgreSQL 16.2
@@ -86,7 +87,8 @@ If you want to change the configuration of the platform you have to do so before
 You can change the `application.properties` inside `cinnamon-platform/src/main/resources`.
 For example, in order to set the password of the database, change the value of `spring.datasource.password`.
 
-Both modules use maven as their build system.
+Both modules use Maven as their build system.
+You can use Maven integrated in your IDE or the provided Maven wrapper.
 
 Compiling the anonymization requires to install arx first.
 ```bash
