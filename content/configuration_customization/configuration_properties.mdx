@@ -1,0 +1,265 @@
+# Configuring Cinnamon
+
+Cinnamon has a modular design and is highly configurable.
+The Spring Boot based modules, i.e. Cinnamon Anonymization and Cinnamon Platform, can be configured via their respective `application.properties` files inside `src/main/resources`.
+External configuration files are currently not loaded, therefore changes must be made directly within the project before building.
+Alternatively environment variables can be used like the `docker-compose.yml` does.
+All other modules currently do not support configurability.
+
+## Configuring Cinnamon Anonymization
+
+**CORS**
+
+Setting origins for CORS can be done like this:
+```properties
+cinnamon.corsAllowedOrigins=http://localhost:4200,http://localhost:8080
+```
+
+**API Documentation**
+
+Cinnamon Anonymization provides endpoints for fetching API documentation in the Open API format and as a Swagger HTML page.
+The path of both endpoints can be configured with the following properties:
+```properties
+springdoc.api-docs.path=/api-docs/anonymization
+springdoc.swagger-ui.path=/api/doc/anonymization
+```
+
+**Port**
+
+The port configuration is only applied when starting Cinnamon Anonymization with Spring's internal Tomcat server.
+The provided Docker images use an external Tomcat server, so this setting has no effect in this case.
+
+```properties
+server.port=8081
+```
+
+## Configuring Cinnamon Platform
+
+Configurations that are not documented here shouldn't be changed when setting up a server.
+
+**CORS**
+
+Configuring CORS can be done like this:
+```properties
+cinnamon.corsAllowedOrigins=http://localhost:4200,http://127.0.0.1:8080
+```
+
+**API Documentation**
+
+Cinnamon Platform provides endpoints for fetching API documentation in the Open API format and as a Swagger HTML page.
+The path of both endpoints can be configured by properties.
+When modifying the URLs in the configuration, the `filterChain` inside `SecurityConfig` has to be adapted to accordingly in order to allow unauthenticated users to access the documentation.
+
+```properties
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/api/doc
+```
+
+**Port**
+
+The port configuration is only applied when starting Cinnamon Platform with Springs internal Tomcat server.
+The provided Docker images use an external Tomcat server, so this setting has no effect when using these images.
+
+```properties
+server.port=8080
+```
+
+**Demo Instance**
+
+Cinnamon Platform has build in support for running the application as a demo instance.
+This enables daily database cleanups and displays a disclaimer in the frontend.
+
+```properties
+cinnamon.is-demo-instance=false
+```
+
+**Database**
+
+Cinnamon Platform only supports PostgreSQL as the underlying database.
+However names of the database and the user, as well as the password can be chosen freely.
+The password must be set before deploying Cinnamon Platform.
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/cinnamon_db
+spring.datasource.username=cinnamon_user
+spring.datasource.password=
+```
+
+**Project Workflow**
+
+The workflow for all projects is defined by the structure of the internal pipeline that is configured via properties.
+The pipeline follows a classic approach and is split into stages, which in turn are split into jobs.
+Each job is tied to an endpoint of an external server which manages process instances on that server.
+Additionally, configurations can be defined and send alongside the data when starting processes.
+
+**External Server**
+
+First, the server that provides endpoints for running processes has to be defined.
+This is done by defining properties in the following form: `cinnamon.external-server.<numeric key>.<property>`.
+The following properties must be defined:
+
+| Property              | Description                                                                                                                                     |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| callback-host         | The host name of Cinnamon Platform under which the external server can reach it. Used for callbacks when a process has been finished.                                                   |
+| url-server            | URL under which the platform can reach the external server.                                                                                                                            |
+| max-parallel-processes| The number of processes the server can run at the same time. If starting a process would exceed the maximum number, the process will be scheduled and started when capacities are available. This property is also available on the endpoint level. |
+
+Below is an example of the default configuration for the anonymization server.
+
+```properties
+cinnamon.external-server.0.callback-host=localhost
+cinnamon.external-server.0.max-parallel-process=1
+cinnamon.external-server.0.url-server=http://localhost:8081
+```
+
+**External Configuration**
+
+The structure of configuration pages are fetched dynamically from the external server.
+Endpoints that provide these definitions can be defined using the form `cinnamon.external-configuration.<configuration name>.<property>` and providing the following properties:
+
+| Property | Description |
+| - | - |
+| algorithm-endpoint | Endpoint for fetching available algorithms. |
+| external-server-index | Index of corresponding external server. |
+
+Again an example for the anonymization:
+
+```properties
+cinnamon.external-configuration.anonymization.algorithm-endpoint=/api/anonymization/algorithms
+cinnamon.external-configuration.anonymization.external-server-index=0
+```
+
+**External Endpoint**
+
+Before defining the jobs in the pipeline, their corresponding endpoints have to be defined.
+This is done by creating entries in the form of `cinnamon.external-server-endpoints.<numerical key>.<property>` with the following properties:
+
+| Property | Description |
+| - | - |
+| callback-part-name | Name of the request part for the callback URL, defaults to `callback`. |
+| cancel-endpoint    | Endpoint for cancelling a process. |
+| cancel-http-method | HTTP method used for cancel request, defaults to `post`. |
+| configuration-encoding | Encoding of the configuration. Options are:<br/><br/>`json`: JSON inside body.<br/>`file`: YAML inside a file. |
+| configuration-name | Name of the configuration to be used. |
+| configuration-part-name | Name of the request for the configuration. |
+| external-server-index | Index of corresponding external server. |
+| inputs             | List of input datasets. See below. |
+| max-parallel-process | Number of parallel processes one endpoint can run.  |
+| outputs            | List of outputs. See below. |
+| process-endpoint   | Endpoint for starting the process. If empty the path from the algorithm definition is used. |
+| status-endpoint    | Endpoint for fetching the status of a process. If starting a process would exceed the max number, the process will be scheduled and started when capacities are available. This property is also available on the external server level. |
+
+All properties defining an endpoint (i.e. `cancel-endpoint`, `process_endpoint` and `status-endpoint`) support placeholders.
+Currently, the following values are injected into the URL:
+
+| Placeholder | Replaced Value |
+| - | - |
+| PROCESS_ID | ID of the process |
+
+Input datasets can be defined using `cinnamon.external-server-endpoints.<numerical key>.inputs[<index>].<property>`.
+
+| Property | Description |
+| - | - |
+| data-configuration-name | Name of the request parameter for the dataset configuration if encoding is `file`. |
+| encoding | Encoding of the dataset. Options are:<br/><br/>`file`: Data as CSV file and separate data configuration (see data-configuration-name).<br/>`json`: Dateset and data configuration as JSON body. |
+| file-name | Name of the file if encoding is `file`. |
+| part-name | Name of the request part for the data. |
+| selector | Selects the dataset. Options are:<br/><br/>`HOLD_OUT`: Hold out split of original dataset.<br/>`LAST_OR_ORIGINAL`: Last result or the original dataset.<br/>`ORIGINAL`: Original dataset.<br/>`OWNER`: The associated dataset (used for statistics). |
+
+Outputs are any files created by the processes and can be defined in the following form: `cinnamon.external-server-endpoints.<numerical key>.outputs[<index>].<property>`.
+The following properties have to be defined:
+
+| Property | Description |
+| - | - |
+| encoding | Content of the output. Options are:<br/><br/>`DATA`:  Data as a CSV file.<br/>`DATA_SET`: Dataset and data configuration as JSON inside the body.<br/>`ERROR`: Error message as plain text.<br/>`FILE`: Generic file with arbitrary content (used for example for statistics or additional data from the synthetization module). |
+| part-name | Name of the request part. |
+
+This is a complete example for the anonymization process:
+
+```properties
+cinnamon.external-server-endpoints.0.callback-part-name=callback
+cinnamon.external-server-endpoints.0.cancel-endpoint=/api/anonymization/process/PROCESS_ID/cancel
+cinnamon.external-server-endpoints.0.cancel-http-method=post
+cinnamon.external-server-endpoints.0.configuration-encoding=json
+cinnamon.external-server-endpoints.0.configuration-name=anonymization
+cinnamon.external-server-endpoints.0.configuration-part-name=anonymizationConfig
+cinnamon.external-server-endpoints.0.external-server-index=0
+cinnamon.external-server-endpoints.0.inputs[0].encoding=json
+cinnamon.external-server-endpoints.0.inputs[0].part-name=data
+cinnamon.external-server-endpoints.0.inputs[0].selector=last_or_original
+cinnamon.external-server-endpoints.0.max-parallel-process=1
+cinnamon.external-server-endpoints.0.outputs[0].encoding=data_set
+cinnamon.external-server-endpoints.0.outputs[0].part-name=anonymized_dataset
+cinnamon.external-server-endpoints.0.outputs[1].encoding=error
+cinnamon.external-server-endpoints.0.outputs[1].part-name=exception_message
+cinnamon.external-server-endpoints.0.pre-processors=
+cinnamon.external-server-endpoints.0.process-endpoint=
+cinnamon.external-server-endpoints.0.status-endpoint=/api/anonymization/process/PROCESS_ID/status
+```
+
+**Statistics Endpoint**
+
+The endpoint that is used for calculating statistics is a bit special, as it is used for all datasets and requires a specific configuration.
+First, the `process_endpoint` has to be defined.
+Furthermore, the endpoint takes one input dataset where the `selector` has to be set to `owner`.
+In order to mark an endpoint to be used for calculating the statistics, the following property is used:
+
+```properties
+cinnamon.statistics-endpoint=3
+```
+
+**Pipelines**
+
+Last, the pipelines can be defined in the configuration.
+Steps are defined by creating properties in the form of `cinnamon.steps.<step name>.<property>`.
+
+| Property | Description |
+| - | - |
+| external-server-endpoint-index | Numeric key of the endpoint to be used |
+| fix-status | Specific for the Cinnamon Synthetization module. Updates the process status after it is finished. |
+| type | The type of the process. Options are:<br/><br/>`data_processing`: Marks process to create a new dataset.<br/>`evaluation`: Marks process to return evaluation results. |
+
+The following examples shows the step for the anonymization job:
+
+```properties
+cinnamon.steps.anonymization.external-server-endpoint-index=0
+cinnamon.steps.anonymization.fix-status=false
+cinnamon.steps.anonymization.step-type=data_processing
+```
+
+A stage is a list of jobs in the form `cinnamon.stages.<stage name>.jobs[<number>]=<job name>`:
+
+```properties
+cinnamon.stages.execution.jobs[0]=anonymization
+cinnamon.stages.execution.jobs[1]=synthetization
+```
+
+And finally the pipeline is a list of stages in the form `cinnamon.pipeline.stages[<number>]=<stage name>`:
+
+```properties
+cinnamon.pipeline.stages[0]=execution
+cinnamon.pipeline.stages[1]=evaluation
+```
+
+## Configuring Docker Compose
+
+When deploying Cinnamon with Docker Compose, all properties can be configured by using environment variables inside the docker-compose.yml.
+Furthermore, the most important properties have been moved into a `.env` file.
+This file has to be placed inside the same directory as the `docker-compose.yml`, so docker recognises the file.
+The following variables can be configured using the `.env` file:
+
+| Environment Variable | Description |
+| - | - |
+| IS_DEMO_INSTANCE | Flag to enable demo instance, defaults to `false`. |
+| PG_DATABASE | Name of the database. |
+| PG_PASSWORD | Password of the database user. |
+| PG_USERNAME | Name of the database user. |
+
+The final file could look like this:
+
+```properties
+IS_DEMO_INSTANCE="false"
+PG_DATABASE="cinnamon_db"
+PG_PASSWORD="changeme"
+PG_USERNAME="cinnamon_user"
+```

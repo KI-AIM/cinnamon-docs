@@ -33,24 +33,7 @@ The website can be accessed by opening the address http://localhost:8080 in the 
 ### Configuration
 If you want to install Cinnamon for productive usage, further configuration may be required.
 
-1. Set the URLs for the client
-
-The client needs to be able to reach all modules.
-The Cinnamon Platform must run at the root of the server, otherwise the website will not be able to fetch the required resources.
-To configure the URLs of other modules, use the `CINNAMON.EXTERNAL-SERVER.<X>.URL-CLIENT` variable.
-
-```yaml
-# docker-compose.yml
-services:
-    cinnamon-platform:
-        environment:
-            CINNAMON.EXTERNAL-SERVER.0.URL-CLIENT: # URL to Cinnamon Anonymization
-            CINNAMON.EXTERNAL-SERVER.1.URL-CLIENT: # URL to Cinnamon Synthetization
-            CINNAMON.EXTERNAL-SERVER.2.URL-CLIENT: # URL to Cinnamon Evaluation
-            CINNAMON.EXTERNAL-SERVER.3.URL-CLIENT: # URL to Cinnamon Risk-Assessment
-```
-
-2. Mount the database
+1. Mount the database
 
 In order to persist the database, mount the data directory from PostgreSQL to your machine:
 
@@ -62,7 +45,7 @@ services:
             - </path/on/machine>:/var/lib/postgresql/data
 ```
 
-3. (Optional) Configure demo server
+2. (Optional) Configure demo server
 
 Cinnamon has build in support for running the platform as a demonstration instance.
 This enables a daily database reset and displays a disclaimer at the top of each page.
@@ -72,6 +55,10 @@ To enable the demonstration mode, set the `IS_DEMO_INSTANCE` variable in the `.e
 # .env
 IS_DEMO_INSTANCE=true
 ```
+
+3. (Optional) Configure the workflow
+
+In case you want to change the default workflow or use your own algorithms see the [Configuring Cinnamon](/configuration_customization/configuration_properties) section for advanced configurations.
 
 ## Manual Installation
 
