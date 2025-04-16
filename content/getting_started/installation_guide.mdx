@@ -92,7 +92,7 @@ You can use Maven integrated in your IDE or the provided Maven wrapper.
 
 Compiling the anonymization requires to install arx first.
 ```bash
-mvn install:install-file -Dfile=ki-aim-anon/src/main/resources/lib/libarx-3.9.1.jar -DgroupId=org.deidentifier -DartifactId=arx -Dversion=3.9.1 -Dpackaging=jar
+mvn install:install-file -Dfile=cinnamon-anonymization/src/main/resources/lib/libarx-3.9.1.jar -DgroupId=org.deidentifier -DartifactId=arx -Dversion=3.9.1 -Dpackaging=jar
 ```
 
 Then both modules can be build with the following command, which creates two `.war` files for the anonymization and platform modules.
