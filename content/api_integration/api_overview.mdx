@@ -1,5 +1,31 @@
 # API Overview
 
+## General
+
+### Available API Endpoints
+
+#### Health Checks
+
+**Description:**
+
+All modules provide an endpoint for health checks at `/actuator/health`.
+Possible health status are "UP", "DOWN" or "UNKNOWN".
+The health check of the Platform module also contains the health status of all the other modules.
+If one module is "DOWN", the platform responds with a "DOWN" as well.
+
+**Specification:**
+| URL | HTTP Method | Request Type | Response Type |
+| - | - | - | - |
+| `/actuator/health` | GET | *None* | JSON |
+
+**Response Example:**<br/>
+
+```json
+{
+    "status": "UP"
+}
+```
+
 ## Cinnamon Platform
 
 Cinnamon Platform provides an Open API specification for all endpoints available at `/api-docs` and a Swagger userinterface at `/api/doc`.

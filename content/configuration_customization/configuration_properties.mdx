@@ -102,6 +102,7 @@ The following properties must be defined:
 | Property              | Description                                                                                                                                     |
 |-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | callback-host         | The host name of Cinnamon Platform under which the external server can reach it. Used for callbacks when a process has been finished.                                                   |
+| health-endpoint | Path under which an endpoint for health checks is available. If empty, a simple ping is used to determine the health |
 | url-server            | URL under which the platform can reach the external server.                                                                                                                            |
 | max-parallel-processes| The number of processes the server can run at the same time. If starting a process would exceed the maximum number, the process will be scheduled and started when capacities are available. This property is also available on the endpoint level. |
 
@@ -109,6 +110,7 @@ Below is an example of the default configuration for the anonymization server.
 
 ```properties
 cinnamon.external-server.anonymization-server.callback-host=localhost
+cinnamon.external-server.anonymization-server.health-endpoint=/actuator/health
 cinnamon.external-server.anonymization-server.max-parallel-process=1
 cinnamon.external-server.anonymization-server.url-server=http://localhost:8081
 ```
