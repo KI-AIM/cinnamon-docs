@@ -95,7 +95,8 @@ Additionally, configurations can be defined and send alongside the data when sta
 **External Server**
 
 First, the server that provides endpoints for running processes has to be defined.
-This is done by defining properties in the following form: `cinnamon.external-server.<numeric key>.<property>`.
+This is done by defining properties in the following form: `cinnamon.external-server.<server_key>.<property>`.
+The server key can ba any speaking name that identifies the server for referencing it in other configuration parameter.
 The following properties must be defined:
 
 | Property              | Description                                                                                                                                     |
@@ -107,9 +108,9 @@ The following properties must be defined:
 Below is an example of the default configuration for the anonymization server.
 
 ```properties
-cinnamon.external-server.0.callback-host=localhost
-cinnamon.external-server.0.max-parallel-process=1
-cinnamon.external-server.0.url-server=http://localhost:8081
+cinnamon.external-server.anonymization-server.callback-host=localhost
+cinnamon.external-server.anonymization-server.max-parallel-process=1
+cinnamon.external-server.anonymization-server.url-server=http://localhost:8081
 ```
 
 **External Configuration**
@@ -126,7 +127,7 @@ Again an example for the anonymization:
 
 ```properties
 cinnamon.external-configuration.anonymization.algorithm-endpoint=/api/anonymization/algorithms
-cinnamon.external-configuration.anonymization.external-server-index=0
+cinnamon.external-configuration.anonymization.external-server-name=anonymization-server
 ```
 
 **External Endpoint**
@@ -183,7 +184,7 @@ cinnamon.external-server-endpoints.0.cancel-http-method=post
 cinnamon.external-server-endpoints.0.configuration-encoding=json
 cinnamon.external-server-endpoints.0.configuration-name=anonymization
 cinnamon.external-server-endpoints.0.configuration-part-name=anonymizationConfig
-cinnamon.external-server-endpoints.0.external-server-index=0
+cinnamon.external-server-endpoints.0.external-server-name=anonymization-server
 cinnamon.external-server-endpoints.0.inputs[0].encoding=json
 cinnamon.external-server-endpoints.0.inputs[0].part-name=data
 cinnamon.external-server-endpoints.0.inputs[0].selector=last_or_original
