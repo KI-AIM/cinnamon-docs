@@ -121,7 +121,26 @@ Please read the [official Tomcat 10 documentation](https://tomcat.apache.org/tom
 
 4. Start the synthetization module
 
-Instructions will be added in the future.
+Use these steps when you want to run the synthetization module as a standalone service.
+
+The synthetization module is a Flask app that runs on port 5000 by default.
+If you only want to run the synthetization module, Python 3.10 and pip are sufficient.
+If you have not cloned the repository yet, do this first:
+
+```bash
+git clone https://github.com/KI-AIM/Cinnamon.git
+cd Cinnamon/cinnamon-synthetization
+```
+
+From the `cinnamon-synthetization` directory:
+
+```bash
+python -m venv .venv
+pip install -r requirements.txt
+python app.py
+```
+
+Verify the service is up at `http://127.0.0.1:5000/actuator/health` or `http://127.0.0.1:5000/get_algorithms`.
 
 5. Start the evaluation module
 
