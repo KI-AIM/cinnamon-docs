@@ -11,7 +11,7 @@ CTGAN (Conditional Tabular GAN) is a GAN-based algorithm specifically designed f
 - Implements training-by-sampling for categorical variables with complex relationships.
 
 **Github Source:**  
-https://github.com/vanderschaarlab/synthcity
+https://github.com/sdv-dev/CTGAN/tree/v0.6.0
 
 **Literature:**  
 Lei Xu, Maria Skoularidou, Alfredo Cuesta-Infante, Kalyan Veeramachaneni. Modeling Tabular data using Conditional GAN. NeurIPS, 2019.
@@ -27,10 +27,40 @@ TVAE (Tabular Variational Autoencoder) is a deep-learning approach based on vari
 - Usually faster to train compared to GAN-based approaches.
 
 **Github Source:**  
-https://github.com/vanderschaarlab/synthcity
+https://github.com/sdv-dev/CTGAN/tree/v0.6.0
 
 **Literature:**  
 Lei Xu, Maria Skoularidou, Alfredo Cuesta-Infante, Kalyan Veeramachaneni. Modeling Tabular data using Conditional GAN. NeurIPS, 2019.
+
+## RTVAE
+
+RTVAE (Robust Tabular VAE) is a variational autoencoder for tabular data that uses a robust divergence to reduce sensitivity to outliers while modeling mixed categorical and continuous features. The Cinnamon implementation uses the RTVAE plugin from synthcity.
+
+**Key features:**
+- Uses a beta-divergence objective to down-weight outliers during training.
+- Supports mixed-type tabular data with dedicated encoder/decoder components.
+- Learns a latent representation that can be sampled to generate realistic rows.
+
+**Github Source:**  
+https://github.com/vanderschaarlab/synthcity
+
+**Literature:**  
+Haleh Akrami, Anand A. Joshi, Jian Li, Sergul Aydore, Richard M. Leahy. A robust variational autoencoder using beta divergence. Knowledge-Based Systems, Volume 238, 2022, 107886, ISSN 0950-7051.
+
+## TabDDPM
+
+TabDDPM is a denoising diffusion probabilistic model adapted to tabular data. It learns to reverse a noising process, enabling high-fidelity synthetic data generation for heterogeneous feature types. The Cinnamon implementation uses the TabDDPM plugin from synthcity.
+
+**Key features:**
+- Diffusion-based generative modeling tailored to tabular data.
+- Handles continuous and categorical features within a unified framework.
+- Stable training with strong data quality on a wide range of tabular datasets.
+
+**Github Source:**  
+https://github.com/vanderschaarlab/synthcity
+
+**Literature:**  
+Akim Kotelnikov, Dmitry Baranchuk, Ivan Rubachev, and Artem Babenko. 2023. TabDDPM: modelling tabular data with diffusion models. In Proceedings of the 40th International Conference on Machine Learning (ICML'23), Vol. 202. JMLR.org, Article 725, 17564-17579.
 
 ## Bayesian Network
 
