@@ -1,0 +1,81 @@
+# Evaluation Algorithms
+This chapter documents the evaluation metrics implemented in Cinnamon. Metrics are grouped into resemblance metrics and utility metrics. Resemblance metrics compare protected data to the real data, while utility metrics assess how well protected data supports machine learning tasks.
+
+## Resemblance Metrics (Cross-Sectional)
+
+- Mean: Average value per numeric feature.
+- Standard Deviation: Dispersion around the mean.
+- Variance: Squared dispersion around the mean.
+- Distinct Values: Count of unique values for categorical features.
+- Mode: Most frequent value per feature.
+- Fifth Percentile: Lower-tail percentile (5%).
+- Median: Middle value (50% percentile).
+- First Quartile (Q1): 25% percentile.
+- Third Quartile (Q3): 75% percentile.
+- Ninety Fifth Percentile: Upper-tail percentile (95%).
+- Minimum: Smallest observed value.
+- Maximum: Largest observed value.
+- Density: Estimated probability density for numeric features.
+- Histogram: Binned frequency distribution.
+- Kolmogorov-Smirnov: Distribution similarity test for numeric features.
+- Hellinger Distance: Distribution similarity for categorical features.
+- Frequency Plot: Frequency distribution comparison.
+- Phi-K Correlation (Mean): Average correlation to other features.
+- Phi-K Correlation (Distance): Average correlation distance to other features.
+- Phi-K Correlation Heatmap: Correlation matrix visualization.
+- Missing Values Count: Missing or empty values per feature.
+
+## Resemblance Metrics (Longitudinal)
+
+- Mean: Average value per numeric feature.
+- Standard Deviation: Dispersion around the mean.
+- Mode: Most frequent value per feature.
+- Fifth Percentile: Lower-tail percentile (5%).
+- Median: Middle value (50% percentile).
+- First Quartile (Q1): 25% percentile.
+- Third Quartile (Q3): 75% percentile.
+- Ninety Fifth Percentile: Upper-tail percentile (95%).
+- Minimum: Smallest observed value.
+- Maximum: Largest observed value.
+- Histogram: Binned frequency distribution.
+- Kolmogorov-Smirnov: Distribution similarity test for numeric features.
+- Hellinger Distance: Distribution similarity for categorical features.
+- Frequency Plot: Frequency distribution comparison.
+- Observation Length Distribution: Distribution of sequence lengths.
+- Missing Values Count: Missing or empty values per feature.
+
+## Utility Metrics
+
+### Machine Learning Utility
+Compares model performance when trained on real vs. protected data.
+
+Classification metrics:
+- Accuracy
+- Balanced Accuracy
+- F1 Score
+- Time Taken
+
+Regression metrics:
+- R-Squared
+- Adjusted R-Squared
+- RMSE
+- Time Taken
+
+Supported classifiers:
+- LogisticRegression
+- SVC
+- KNeighborsClassifier
+- DecisionTreeClassifier
+- RandomForestClassifier
+- MLPClassifier
+
+Supported regressors:
+- LinearRegression
+- SVR
+- KNeighborsRegressor
+- DecisionTreeRegressor
+- RandomForestRegressor
+- MLPRegressor
+
+### Discriminator-based Evaluation
+Measures how easily a classifier can distinguish real from protected data.

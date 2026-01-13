@@ -1,0 +1,83 @@
+# Cinnamon Evaluation
+
+This guide explains how to contribute to the Flask-based evaluation module and which files must be updated when you add or change evaluation metrics.
+
+## Local setup
+
+The service runs on port 5010 by default and lives in `cinnamon-evaluation`.
+
+```bash
+cd <path-to-cinnamon-repo>/cinnamon-evaluation
+python -m venv .venv
+pip install -r requirements.txt
+python app.py
+```
+
+Health and discovery endpoints:
+- `http://127.0.0.1:5010/actuator/health`
+- `http://127.0.0.1:5010/get_evaluation_metrics/cross-sectional`
+
+If you change host or port, update the Cinnamon Platform config in `cinnamon-platform/src/main/resources/application.properties`.
+
+## Module layout (key files)
+
+- `app.py` orchestrates the API workflow, preprocessing, metric dispatching, and callback handling.
+- `evaluation_metrics.py` registers the metric function maps for cross-sectional, longitudinal, and descriptive runs.
+- `dispatcher.py` executes metrics from the evaluation configuration.
+- `resemblance/tabular/metrics.py` and `resemblance/longitudinal/metrics.py` define resemblance metrics.
+- `utility/tabular/machine_learning_eval.py` defines utility metrics.
+- `resemblance/overview_resemblance_metrics.yaml` and `utility/overview_utility_metrics.yaml` define metric metadata for the frontend.
+- `visualization/vis_converter.py` formats results and groups metrics by visualization type.
+- `data_processing/pre_process.py` and `data_processing/post_process.py` normalize inputs and format outputs.
+- `static_configs/evaluation_config_descriptive.yaml` and `static_configs/evaluation_config_time_attributes.yaml` provide built-in configs.
+- `requirements.txt` and `Dockerfile` control runtime dependencies and container builds.
+
+## API contract (what the platform expects)
+
+The main entry point is `POST /start_evaluation`. The request must provide:
+- `real_data`: real data as CSV
+- `synthetic_data`: protected data as CSV
+- `attribute_config`: attribute configuration YAML
+- `evaluation_config`: evaluation configuration YAML
+- `session_key`: session identifier
+- `callback`: callback URL
+
+Endpoints:
+- `POST /start_evaluation` to run the full evaluation workflow.
+- `GET /get_evaluation_metrics/<data_format>` to fetch metric metadata for `cross-sectional` and `longitudinal`.
+- `POST /calculate_descriptive_statistics` for descriptive statistics (real data only).
+- `POST /cancel_evaluation` to stop a running job.
+
+The callback receives a `metrics_file` JSON part containing the evaluation results.
+
+## Adding a new metric
+
+1. Implement the metric function
+   - Add a function to `resemblance/tabular/metrics.py`, `resemblance/longitudinal/metrics.py`, or `utility/tabular/machine_learning_eval.py`.
+   - Keep the function signature aligned with existing metrics (real_df, synthetic_df, and optional parameters).
+
+2. Register the metric
+   - Add the function to `evaluation_metrics.py` under `metric_functions_cross_sectional`, `metric_functions_longitudinal`, or `metric_functions_descriptive`.
+
+3. Add metadata for the frontend
+   - Update `resemblance/overview_resemblance_metrics.yaml` or `utility/overview_utility_metrics.yaml`.
+   - Provide `display_name`, `function_name`, `description`, `version`, and `visualization_type`.
+   - If the metric requires parameters, define them under `parameters` so the UI can render inputs.
+
+4. Update documentation
+   - Add the metric to the evaluation documentation pages if it affects user-facing capabilities.
+
+## When you must update other files
+
+- New Python dependencies: update `requirements.txt` (Docker installs from it).
+- New metric metadata or UI options: update `resemblance/overview_resemblance_metrics.yaml` or `utility/overview_utility_metrics.yaml`.
+- New visualization types or result formatting: update `visualization/vis_converter.py`.
+- New date or time transformations: update `static_configs/evaluation_config_time_attributes.yaml` and `data_processing/post_process.py`.
+- Changes to request/response formats or endpoints: update `app.py` and the platform integration in `cinnamon-platform/src/main/resources/application.properties`.
+
+## Verification (current and future)
+
+Automated tests for the evaluation module will be added in future work. Until then, verify changes manually:
+- `/get_evaluation_metrics/cross-sectional` lists the new or updated metric.
+- A sample `/start_evaluation` request returns a `metrics_file` in the callback.
+- `/calculate_descriptive_statistics` returns results for real data.

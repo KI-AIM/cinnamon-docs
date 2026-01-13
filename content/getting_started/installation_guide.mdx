@@ -144,7 +144,26 @@ Verify the service is up at `http://127.0.0.1:5000/actuator/health` or `http://1
 
 5. Start the evaluation module
 
-Instructions will be added in the future.
+Use these steps when you want to run the evaluation module as a standalone service.
+
+The evaluation module is a Flask app that runs on port 5010 by default.
+If you only want to run the evaluation module, Python 3.10 and pip are sufficient.
+If you have not cloned the repository yet, do this first:
+
+```bash
+git clone https://github.com/KI-AIM/Cinnamon.git
+cd Cinnamon/cinnamon-evaluation
+```
+
+From the `cinnamon-evaluation` directory:
+
+```bash
+python -m venv .venv
+pip install -r requirements.txt
+python app.py
+```
+
+Verify the service is up at `http://127.0.0.1:5010/actuator/health` or `http://127.0.0.1:5010/get_evaluation_metrics/cross-sectional`.
 
 6. Start the risk assessment module
 
