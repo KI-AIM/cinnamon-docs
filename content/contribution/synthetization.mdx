@@ -1,0 +1,73 @@
+# Cinnamon Synthetization
+
+This guide explains how to contribute to the Flask-based synthetization module and which files must be updated when you add or change algorithms.
+
+## Local setup
+
+The service runs on port 5000 by default and lives in `cinnamon-synthetization`.
+
+```bash
+cd <path-to-cinnamon-repo>/cinnamon-synthetization
+python -m venv .venv
+pip install -r requirements.txt
+python app.py
+```
+
+Health and discovery endpoints:
+- `http://127.0.0.1:5000/actuator/health`
+- `http://127.0.0.1:5000/get_algorithms`
+
+If you change host or port, update the Cinnamon Platform config in `cinnamon-platform/src/main/resources/application.properties`.
+
+## Module layout (key files)
+
+- `app.py` orchestrates the API workflow: input validation, preprocessing, synthesize, postprocess, callback, and status updates.
+- `synthesizer_classes.py` is the registry of available algorithms and their metadata.
+- `synthetic_tabular_data_generator/algorithms/*` contains algorithm wrappers (tabular).
+- `synthetic_longitudinal_data_generator/algorithms/*` contains longitudinal algorithms (currently PAR only).
+- `synthetic_tabular_data_generator/synthesizer_config/*.yaml` holds UI-facing algorithm configs (parameter schema).
+- `data_processing/pre_process.py` and `data_processing/post_process.py` transform data and handle missing values.
+- `api_utility/status/status_updater.py` writes process status to `outputs/status/<session_key>.yaml`.
+- `requirements.txt` and `Dockerfile` control runtime dependencies and container builds.
+
+## API contract (what the platform expects)
+
+The main entry point is `POST /start_synthetization_process/<synthesizer_name>`. The request must provide:
+- `data`: real data as CSV
+- `attribute_config`: attribute configuration YAML
+- `algorithm_config`: synthesizer configuration YAML
+- `session_key`: session identifier
+- `callback`: callback URL
+
+Statuses are read from `GET /get_status/<session_key>`, and available algorithms are discovered via `GET /get_algorithms`.
+
+## Adding a new algorithm
+
+1. Implement the synthesizer
+   - Add a wrapper in `synthetic_tabular_data_generator/algorithms/` (or the longitudinal folder).
+   - Inherit from `TabularDataSynthesizer` and implement `_initialize_*`, `_fit`, `_sample`, and `_get_model`.
+   - Keep the configuration shape consistent with existing wrappers (accessed under `synthetization_configuration.algorithm`).
+
+2. Add a configuration YAML
+   - Create a new file in `synthetic_tabular_data_generator/synthesizer_config/`.
+   - The file name must match the URL you expose in the registry (see next step).
+   - Define parameters in `model_parameter`, `model_fitting`, and `sampling` to drive the frontend form.
+
+3. Register the algorithm
+   - Add it to `synthesizer_classes.py` with `display_name`, `description`, and the config URL.
+   - The `URL` should point to `/synthetic_tabular_data_generator/synthesizer_config/<file>.yaml`.
+
+4. Update documentation
+   - Add the new algorithm to `content/algorithms_and_evaluation/implemented_algorithms/synthetization_algorithms.mdx`.
+   - If the API contract or output files change, also update the relevant docs and the platform integration notes.
+
+## When you must update other files
+
+- New Python dependencies: update `requirements.txt` (Docker installs from it).
+- New config shape or new data types: update `data_processing/pre_process.py` and `data_processing/post_process.py`.
+- Changed API contract (inputs, outputs, endpoints): update `cinnamon-platform/src/main/resources/application.properties` and any frontend assumptions.
+- New or renamed config files: update `synthesizer_classes.py` and the docs list of algorithms.
+
+## Verification (current and future)
+
+Automated tests for the synthetization module will be added in future work.

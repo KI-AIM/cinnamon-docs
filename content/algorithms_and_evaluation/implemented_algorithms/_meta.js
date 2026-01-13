@@ -4,4 +4,5 @@ export default {
         title: 'Anonymization Algorithms',
     } ,
     synthetization_algorithms: 'Synthetization Algorithms',
+    evaluation_algorithms: 'Evaluation Algorithms',
 }
