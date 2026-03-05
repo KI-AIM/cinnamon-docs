@@ -39,8 +39,4 @@ export default {
         title: 'Contribution',
         type: 'doc'
     },
-    acknowledgement: {
-        display: 'hidden',
-        title: 'Acknowledgements',
-    },
 }
